@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunkfrontend=self.webpackChunkfrontend||[]).push([[168],{168:(e,n,s)=>{s.r(n),s.d(n,{default:()=>d});var t=s(43),a=s(213);var c=s(579);const d=function(e){const[n,s]=(0,t.useState)("");return(0,t.useEffect)((()=>{(async()=>(await a.A.get("/api/hello")).data)().then((e=>{console.log(e),s(e)}))}),[]),(0,c.jsxs)("div",{children:[(0,c.jsx)("div",{children:"API_1 Page \uc785\ub2c8\ub2e4."}),(0,c.jsxs)("div",{children:["$",n]})]})}}}]);
+//# sourceMappingURL=168.9dd43406.chunk.js.map

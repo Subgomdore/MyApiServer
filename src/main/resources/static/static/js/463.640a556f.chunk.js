@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunkfrontend=self.webpackChunkfrontend||[]).push([[463],{463:(e,n,r)=>{r.r(n),r.d(n,{default:()=>s});r(43),r(165);var t=r(579);const s=function(e){return(0,t.jsx)("div",{children:"API_1 Page \uc785\ub2c8\ub2e4."})}}}]);
+//# sourceMappingURL=463.640a556f.chunk.js.map

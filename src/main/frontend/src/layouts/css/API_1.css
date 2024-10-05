@@ -1,0 +1,135 @@
+/* 상단 버튼 및 검색바 컨테이너 */
+.search-and-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    background-color: #f8f9fa; /* 희미한 배경색 추가 */
+    padding: 10px 20px; /* 여백 추가 */
+    border-radius: 8px; /* 둥근 모서리 추가 */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* 희미한 그림자 */
+}
+
+/* 각 버튼의 기본 스타일 */
+.search-and-buttons button {
+    margin-right: 10px;
+    padding: 8px 16px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.search-and-buttons button:last-child {
+    margin-right: 0;
+}
+
+.search-and-buttons button:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+}
+
+/* 검색바 스타일 */
+.search-and-buttons input {
+    padding: 10px;
+    width: 300px;
+    margin-right: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #ffffff;
+    box-shadow: inset 0px 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* 필터 스타일 */
+.search-and-buttons select {
+    padding: 10px;
+    margin-left: 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+/* 전체 리스트 컨테이너 */
+.market-lists {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3등분 */
+    gap: 30px;
+    padding: 20px;
+    max-width: 90%; /* 전체 영역의 90% */
+    margin: 0 auto; /* 좌우 여백 자동 */
+    margin-top: 20px;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.1); /* 컨테이너 그림자 */
+    border-radius: 10px; /* 전체 컨테이너 둥근 모서리 */
+    background-color: #ffffff;
+}
+
+/* 각 마켓 리스트 (KRW, BTC, USDT) */
+.market-list {
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    font-size: 14px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.market-list:hover {
+    transform: translateY(-5px); /* 약간 위로 이동 */
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15); /* 호버 시 그림자 */
+}
+
+/* 마켓 리스트 제목 스타일 */
+.market-list h3 {
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+/* 리스트 아이템 */
+.market-item {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #ccc;
+    padding: 10px;
+    align-items: center;
+    height: 50px;
+    font-size: 13px;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    word-break: break-word; /* 긴 글자가 찌그러지지 않도록 처리 */
+}
+
+.market-item:hover {
+    background-color: #e6f7ff;
+    box-shadow: 0px 0px 10px rgba(0, 123, 255, 0.3);
+}
+
+/* 각 칸의 내용이 중앙 정렬되도록 */
+.market-item div {
+    flex: 1;
+    text-align: center;
+    word-wrap: break-word;
+    border-right: 1px solid #ddd;
+}
+
+.market-item div:last-child {
+    border-right: none;
+}
+
+/* 마지막 아이템의 경계선 제거 */
+.market-item:last-child {
+    border-bottom: none;
+}
+
+/* 반응형 처리: 모바일 기기에서 세로 정렬 */
+@media (max-width: 768px) {
+    .market-lists {
+        grid-template-columns: 1fr;
+        max-width: 100%;
+    }
+}
