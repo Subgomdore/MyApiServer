@@ -117,10 +117,11 @@ public class UpbitAPI {
                     String err = "fetchPriceAndSync Request failed" + response.code();
                     throw new Exception(err);
                 }
-                log.info("while... sleep ... 1000 !");
+
                 log.info("while...this coinPrice of Size() => " +coinPriceList.size());
-                log.info("while...this url =>" + url);
-                Thread.sleep(1000);
+                log.info("GET MARKET .. => " + market);
+                log.info( "[ " + paramsMap.get("ALL_COUNT") + " ] / " + paramsMap.get("PROGRESS"));
+                Thread.sleep(500);
             }
         } catch (Exception e) {
             log.error(e);

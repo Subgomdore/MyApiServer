@@ -45,6 +45,7 @@ function API_1(props) {
         let btcList = [];
         let usdtList = [];
 
+        debugger;
         for (let key in data) {
             const marketKey = data[key].market;
             if (

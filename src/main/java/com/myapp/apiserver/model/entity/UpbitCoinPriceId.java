@@ -1,4 +1,4 @@
-package com.myapp.apiserver.domain;
+package com.myapp.apiserver.model.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,4 +1,4 @@
-package com.myapp.apiserver.dto;
+package com.myapp.apiserver.model.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
