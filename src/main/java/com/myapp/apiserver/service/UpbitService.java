@@ -1,22 +1,23 @@
 package com.myapp.apiserver.service;
 
-import com.myapp.apiserver.domain.UpbitCoin;
-import com.myapp.apiserver.domain.UpbitCoinPrice;
-import com.myapp.apiserver.dto.UpbitCoinDTO;
-import com.myapp.apiserver.dto.UpbitCoinPriceDTO;
+import com.myapp.apiserver.model.dto.UpbitAllDataResponseDTO;
+import com.myapp.apiserver.model.dto.UpbitCoinDTO;
+import com.myapp.apiserver.model.dto.UpbitCoinPriceDTO;
+import com.myapp.apiserver.model.entity.UpbitCoin;
+import com.myapp.apiserver.model.entity.UpbitCoinPrice;
 import jakarta.transaction.Transactional;
+import jdk.jfr.Description;
 
 import java.util.List;
-import java.util.Map;
 
 @Transactional
 public interface UpbitService {
 
+    @Description("전체코인리스트 가져오기")
     List<UpbitCoinDTO> getALlCoinList();
 
-    Map<String, String> fetchAndSync();
-
-    Map<String, String> fetchPriceAndSync();
+    @Description("전체코인 가격정보 가져오기")
+    List<UpbitAllDataResponseDTO> getAllCoinAndPriceList();
 
     default UpbitCoinDTO entityToDTO(UpbitCoin entity) {
         return UpbitCoinDTO.builder()
@@ -80,6 +81,31 @@ public interface UpbitService {
                 .build();
     }
 
+    default UpbitAllDataResponseDTO entityToDTO(UpbitCoin coin, UpbitCoinPrice price) {
+        return UpbitAllDataResponseDTO.builder()
+                // 코인 정보 매핑
+                .market(coin.getMarket())
+                .seq(coin.getSeq())
+                .korean_name(coin.getKorean_name())
+                .english_name(coin.getEnglish_name())
+                .del_flag(coin.getDel_flag())
+                .add_date(coin.getAdd_date())
+                .change_date(coin.getChange_date())
 
+                // 가격 정보 매핑 (price 객체가 null일 수 있으므로 방어 코드 추가)
+                .candle_date_time_kst(price != null ? price.getCandle_date_time_kst() : null)
+                .candle_date_time_utc(price != null ? price.getCandle_date_time_utc() : null)
+                .opening_price(price != null ? price.getOpening_price() : null)
+                .high_price(price != null ? price.getHigh_price() : null)
+                .low_price(price != null ? price.getLow_price() : null)
+                .trade_price(price != null ? price.getTrade_price() : null)
+                .timestamp(price != null ? price.getTimestamp() : null)
+                .candle_acc_trade_price(price != null ? price.getCandle_acc_trade_price() : null)
+                .candle_acc_trade_volume(price != null ? price.getCandle_acc_trade_volume() : null)
+                .prev_closing_price(price != null ? price.getPrev_closing_price() : null)
+                .change_price(price != null ? price.getChange_price() : null)
+                .change_rate(price != null ? price.getChange_rate() : null)
+                .build();
+    }
 
 }
