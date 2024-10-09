@@ -14,7 +14,10 @@ import java.util.List;
 public interface UpbitService {
 
     @Description("전체코인리스트 가져오기")
-    List<UpbitCoinDTO> getALlCoinList();
+    List<UpbitCoinDTO> getAllCoinList();
+
+    @Description("전체코인리스트 캐싱작업")
+    List<String> getAllCoinsWithCache();
 
     @Description("전체코인 가격정보 가져오기")
     List<UpbitAllDataResponseDTO> getAllCoinAndPriceList();

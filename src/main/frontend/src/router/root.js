@@ -5,12 +5,12 @@ const { createBrowserRouter } = require("react-router-dom");
 const Loading = <div>Loading...</div>;
 
 const Main = lazy(() => import("../pages/MainPage"));
-const API_1 = lazy(() => import("../pages/API_1"));
+const API_1 = lazy(() => import("../pages/upbit/UpbitMainPage"));
 
 const root = createBrowserRouter([
     {
         path: "/",
-        element: <Layout />, // Layout을 최상위에 배치
+        element: <Layout />,
         children: [
             {
                 path: "",
@@ -20,10 +20,6 @@ const root = createBrowserRouter([
                 path: "api/upbit/list",
                 element: <Suspense fallback={Loading}><API_1 /></Suspense>
             },
-            {
-                path: "/api/upbit/pricesync",
-                element: <Suspense fallback={Loading}><API_1 /></Suspense>
-            }
         ]
     }
 ]);

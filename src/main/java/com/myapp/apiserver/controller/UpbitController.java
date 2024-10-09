@@ -1,6 +1,7 @@
 package com.myapp.apiserver.controller;
 
 import com.myapp.apiserver.model.dto.UpbitAllDataResponseDTO;
+import com.myapp.apiserver.model.dto.UpbitCoinDTO;
 import com.myapp.apiserver.service.UpbitService;
 import jdk.jfr.Description;
 import lombok.RequiredArgsConstructor;
@@ -20,9 +21,9 @@ public class UpbitController {
     private final UpbitService upbitService;
 
     @GetMapping("/list")
-    @Description("업비트 코인리스트와 가격 정보")
-    public List<UpbitAllDataResponseDTO> getAllCoinList() {
-        List<UpbitAllDataResponseDTO> resDto = upbitService.getAllCoinAndPriceList();
+    @Description("업비트 코인리스트")
+    public List<UpbitCoinDTO> getAllCoinList() {
+        List<UpbitCoinDTO> resDto = upbitService.getAllCoinList();
         return resDto;
     }
 

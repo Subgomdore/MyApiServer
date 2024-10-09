@@ -8,14 +8,14 @@ public class Logger {
         StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
         StackTraceElement currentElement = stackTrace[2];  // 호출한 메서드의 정보를 가져옴
 
-        log.info("Class: " + currentElement.getClassName());
+        log.warn("Class: " + currentElement.getClassName());
     }
 
     public static void methodInfo() {
         StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
         StackTraceElement currentElement = stackTrace[2];  // 호출한 메서드의 정보를 가져옴
 
-        log.info("Class: " + currentElement.getClassName() +
+        log.warn("Class: " + currentElement.getClassName() +
                 ", Method: " + currentElement.getMethodName());
     }
 

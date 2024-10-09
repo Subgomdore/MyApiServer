@@ -19,7 +19,7 @@ function Layout() {
                 <div className="logo">insH-MyLab</div>
                 <div className="accordion-item">
                     <button onClick={toggleAccordion} className="accordion-title">
-                        <FaList /> 개발중이에요!! <FaChevronDown />
+                        <FaList /> 개발중 <FaChevronDown />
                     </button>
                     <motion.div
                         style={{ overflow: 'hidden' }}

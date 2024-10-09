@@ -9,4 +9,6 @@ import java.util.List;
 public interface UpbitCoinPriceRepository extends JpaRepository<UpbitCoinPrice, UpbitCoinPriceId> {
 
     List<UpbitCoinPrice> findByMarket(String market);
+
+
 }

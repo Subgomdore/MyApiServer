@@ -16,9 +16,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Log4j2
 @Component
@@ -26,8 +24,6 @@ public class UpbitAPI {
 
     @Description("전체코인목록조회 및 등록")
     public List<Map<String, Object>> doRegisterAllCoinList() {
-        Logger.methodInfo();
-
         Response response = null;
         List<Map<String, Object>> coinListMap = null;
 
@@ -60,11 +56,13 @@ public class UpbitAPI {
 
     @Description("코인가격 동기화")
     public List<Map<String, Object>> doFetchPriceAndSync(Map<String, String> paramsMap) throws IOException {
-        Logger.methodInfo();
-
         OkHttpClient client = new OkHttpClient();
         Response response = null;
         List<Map<String, Object>> coinPriceList = new ArrayList<Map<String, Object>>();
+        String remainingReq = "";
+        int min = 0;
+        int sec = 0;
+
 
         try {
             // 필수 매개변수
@@ -74,13 +72,14 @@ public class UpbitAPI {
             }
 
             String market = paramsMap.get("market"); // 마켓 코드
-            String to = MapUtils.getString(paramsMap, "to", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")));
+            String to = MapUtils.getString(paramsMap, "to",
+                    LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + "T09:00:00");
             String count = MapUtils.getString(paramsMap, "count", "200");  // count가 없으면 기본값 "200"
             String convertingPriceUnit = MapUtils.getString(paramsMap, "convertingPriceUnit", "KRW"); // 종가 환산 화폐 단위, 생략 가능
 
             boolean reqFlag = true;
 
-            while (reqFlag){
+            while (reqFlag) {
                 // URL 구성
                 String url = String.format("https://api.upbit.com/v1/candles/days?market=%s&to=%s&count=%s&convertingPriceUnit=%s",
                         market, to, count, convertingPriceUnit);
@@ -97,6 +96,14 @@ public class UpbitAPI {
                     String responseBody = response.body().string();
                     CustomJsonDeserializer customJson = new CustomJsonDeserializer();
 
+                    // 남은 요청횟수 계산
+                    remainingReq = response.header("Remaining-Req");
+                    Map<String, Integer> remainingReqCount = calculateRemainingCount(remainingReq);
+                    if (!remainingReqCount.isEmpty()) {
+                        min = remainingReqCount.get("min");
+                        sec = remainingReqCount.get("sec");
+                    }
+
                     // STATUS 200 이지만 ResponseData가 없을경우 => 너무 예전기간 조회
                     JsonElement jsonElement = JsonParser.parseString(responseBody);
                     if (jsonElement.isJsonArray()) {
@@ -105,23 +112,25 @@ public class UpbitAPI {
                             reqFlag = false;
                         } else {
                             coinPriceList.addAll(customJson.parseJsonArray(responseBody));
-                            String changeTo = (String) coinPriceList.get(coinPriceList.size()-1).get("candle_date_time_kst") + ":00:00";
-                            if(to.equals(changeTo)){
+                            String changeTo = (String) coinPriceList.get(coinPriceList.size() - 1).get("candle_date_time_kst") + ":00:00";
+                            if (to.equals(changeTo)) {
                                 reqFlag = false;
-                            }else {
+                            } else {
                                 to = changeTo;
                             }
                         }
                     }
                 } else {
-                    String err = "fetchPriceAndSync Request failed" + response.code();
+                    String err = "fetchPriceAndSync Request failed >> " + response.code();
                     throw new Exception(err);
                 }
 
-                log.info("while...this coinPrice of Size() => " +coinPriceList.size());
-                log.info("GET MARKET .. => " + market);
-                log.info( "[ " + paramsMap.get("ALL_COUNT") + " ] / " + paramsMap.get("PROGRESS"));
-                Thread.sleep(500);
+                if (min < 1 || sec < 1){
+                    Thread.sleep(1000);
+                }
+
+                log.warn("MIN> " + min + " / " + "SEC> " + sec);
+                log.warn("[ " + paramsMap.get("ALL_COUNT") + " / " + paramsMap.get("PROGRESS") + " ] >> Market : " + market);
             }
         } catch (Exception e) {
             log.error(e);
@@ -132,6 +141,38 @@ public class UpbitAPI {
             }
 
             return coinPriceList;
+        }
+    }
+
+    private Map<String, Integer> calculateRemainingCount(String remainingReq) {
+        Map<String, Integer> resultMap = new HashMap<>();
+        try {
+            if (remainingReq  == null && remainingReq.isBlank()) {
+                throw new Exception("Response header data is null! Please check the parameters.");
+            }
+
+            String[] parts = remainingReq.split(";");
+
+            String minValue = "";
+            String secValue = "";
+
+            for (String part : parts) {
+                part = part.trim();
+                if (part.startsWith("min=")) { // Array가 순서보장이 안되기때문에 조건문으로 값을 구한다.
+                    minValue = part.substring(4);
+                } else if (part.startsWith("sec=")) {
+                    secValue = part.substring(4);
+                }
+            }
+
+            resultMap.put("min", Integer.valueOf(minValue));
+            resultMap.put("sec", Integer.valueOf(secValue));
+
+            return resultMap;
+        } catch (Exception e) {
+            log.error(e);
+            e.printStackTrace();
+            return null;
         }
     }
 }

@@ -9,6 +9,7 @@ import com.myapp.apiserver.repository.UpbitCoinPriceRepository;
 import com.myapp.apiserver.repository.UpbitRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -26,10 +27,16 @@ public class UpbitServiceImpl implements UpbitService {
     private final UpbitCoinPriceRepository upbitCoinPriceRepository;
 
     @Override
-    public List<UpbitCoinDTO> getALlCoinList() {
+    public List<UpbitCoinDTO> getAllCoinList() {
         List<UpbitCoin> upbitCoins = upbitRepository.findAll(Sort.by(Sort.Direction.ASC, "seq"));
         List<UpbitCoinDTO> upbitCoinDTOList = upbitCoins.stream().map(map -> entityToDTO(map)).collect(Collectors.toList());
         return upbitCoinDTOList;
+    }
+
+    @Override
+    @Cacheable(value = "coinCache")
+    public List<String> getAllCoinsWithCache() {
+        return upbitRepository.findAllCoinCodes();
     }
 
     @Override
@@ -47,7 +54,6 @@ public class UpbitServiceImpl implements UpbitService {
                         price -> price,  // 값을 그대로 사용
                         (existing, replacement) -> existing  // 중복 시 기존 값 사용
                 ));
-
 
         // 4. 코인 정보와 가격 정보를 매핑하여 DTO로 변환
         return upbitCoins.stream().map(coin -> {

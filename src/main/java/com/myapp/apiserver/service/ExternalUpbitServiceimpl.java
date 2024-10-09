@@ -8,6 +8,8 @@ import com.myapp.apiserver.model.entity.UpbitCoin;
 import com.myapp.apiserver.model.entity.UpbitCoinPrice;
 import com.myapp.apiserver.repository.UpbitCoinPriceRepository;
 import com.myapp.apiserver.repository.UpbitRepository;
+import com.myapp.apiserver.websocket.UpbitWebSocketClient;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
@@ -27,6 +29,7 @@ public class ExternalUpbitServiceimpl implements ExternalUpbitService {
     private final UpbitRepository upbitRepository;
     private final UpbitService upbitService;
     private final UpbitCoinPriceRepository upbitCoinPriceRepository;
+    private final UpbitWebSocketClient upbitWebSocketClient;
 
     @Override
     public void doGetUpbitCoinList() {
@@ -63,17 +66,15 @@ public class ExternalUpbitServiceimpl implements ExternalUpbitService {
                             .build()).collect(Collectors.toList());
 
             upbitCoins.forEach(entity -> upbitRepository.save(entity));
-
-
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
     }
 
     @Override
-    public void doGetUpbitCoinPrice() {
+    public void doGetUpbitCoinPrice(String count) {
         try {
-            List<UpbitCoinDTO> coinList = upbitService.getALlCoinList();
+            List<UpbitCoinDTO> coinList = upbitService.getAllCoinList();
 
             List<String> marketList =
                     coinList.stream().map(UpbitCoinDTO::getMarket).collect(Collectors.toList());
@@ -85,6 +86,7 @@ public class ExternalUpbitServiceimpl implements ExternalUpbitService {
                 Map<String, String> paramsMap = new HashMap<>();
 
                 paramsMap.put("market", market);
+                paramsMap.put("count", count);
                 paramsMap.put("ALL_COUNT", String.valueOf(marketList.size()));
                 paramsMap.put("PROGRESS", String.valueOf(i));
 
@@ -130,8 +132,6 @@ public class ExternalUpbitServiceimpl implements ExternalUpbitService {
                         .collect(Collectors.toList());
 
                 upbitCoinPriceRepository.saveAll(upbitCoinPrices);
-
-                Thread.sleep(500);
                 i++;
             }
         } catch (Exception e) {

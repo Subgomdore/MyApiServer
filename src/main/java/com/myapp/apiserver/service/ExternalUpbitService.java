@@ -11,8 +11,7 @@ public interface ExternalUpbitService {
 
     void doGetUpbitCoinList();
 
-    void doGetUpbitCoinPrice();
-
+    void doGetUpbitCoinPrice(String count);
 
     default UpbitCoinDTO entityToDTO(UpbitCoin entity) {
         return UpbitCoinDTO.builder()

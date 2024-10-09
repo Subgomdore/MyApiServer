@@ -8,26 +8,33 @@
 /* 고정된 사이드바 스타일 */
 .sidebar {
     width: 250px;
-    background-color: #2d323b;
+    background-color: #2d323b; /* 일관된 사이드바 배경 색상 */
     color: #ffffff;
     height: 100vh; /* 고정 */
     padding: 20px;
-    position: fixed; /* 고정 */
+    position: fixed; /* 고정된 위치 */
     top: 0;
     left: 0;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* 그림자 추가 */
 }
 
+/* 사이드바 로고 */
 .sidebar .logo {
+    align-self: center;
     font-size: 24px;
     font-weight: bold;
     margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    height: 40px; /* 높이 지정 */
 }
 
+/* 아코디언 타이틀 */
 .accordion-title {
-    background: none;
+    background-color: #333; /* 기본 배경 색상 */
     color: #ffffff;
     border: none;
     padding: 10px;
@@ -38,43 +45,59 @@
     justify-content: space-between;
     align-items: center;
     width: 100%;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
 }
 
 .accordion-title:hover {
-    background-color: #1f252d;
+    background-color: #555; /* 호버 시 배경색 */
 }
 
-.accordion-item ul {
-    color: #ffffff; /* 밝은 색으로 폰트 변경, 원하는 밝은 색으로 수정 가능 */
-    background-color: #333333; /* 배경색을 어둡게 설정 */
+/* 아코디언 컨텐츠 */
+.accordion-content {
+    overflow: hidden;
+    transition: height 0.3s ease;
+    padding-left: 10px;
+    background-color: #fff; /* 아코디언 컨텐츠 배경 색 */
 }
 
-.accordion-item ul li a {
-    color: #ffffff; /* 링크 텍스트의 색상을 밝은 색으로 설정 */
-    text-decoration: none; /* 링크의 밑줄 제거 */
+.accordion-content ul {
+    padding: 10px 0;
+    list-style: none;
+    background-color: #333333; /* 배경색 설정 */
+    color: #ffffff; /* 폰트 색상 */
 }
 
-.accordion-item ul li a:hover {
-    color: #00ffff; /* 링크에 마우스 오버 시 색상을 밝은 색으로 설정 */
+.accordion-content li {
+    margin-bottom: 8px;
 }
 
+.accordion-content li a {
+    color: #007bff; /* 링크 기본 색상 */
+    text-decoration: none;
+}
+
+.accordion-content li a:hover {
+    text-decoration: underline; /* 링크 호버 시 밑줄 */
+}
+
+/* 사이드바 메뉴 */
 .sidebar-menu {
     list-style: none;
-    padding-left: 0;
 }
 
 .sidebar-menu li {
-    margin: 10px 0;
+    margin: 10px;
 }
 
 .sidebar-menu a {
-    color: #d3d7dc;
+    color: #d3d7dc !important; /* 기본 링크 색상 */
     text-decoration: none;
     font-size: 16px;
 }
 
 .sidebar-menu a:hover {
-    color: #a3b9cc;
+    color: #FFB84D  !important; /* 링크 호버 시 색상 */
 }
 
 /* 헤더와 메인 콘텐츠가 사이드바 옆에 위치하도록 */
@@ -86,14 +109,24 @@
     height: 100vh;
 }
 
+/* 헤더 */
 .header {
-    background-color: #323a45;
+
+    margin-left: 35px;
+    background-color: #323a45; /* 헤더 배경 색상 */
     color: #ffffff;
-    padding: 10px 20px;
+    padding: 10px 20px; /* 로고와 동일한 패딩 */
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    height: 60px; /* 로고와 같은 높이로 맞춤 */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 그림자 */
+}
+
+/* 네비게이션 스타일 */
+.header nav {
+    display: flex;
+    align-items: center;
 }
 
 .header nav a {
@@ -106,7 +139,7 @@
 }
 
 .header nav a:hover {
-    color: #a3b9cc;
+    color: #a3b9cc; /* 호버 시 헤더 링크 색상 */
 }
 
 /* 메인 콘텐츠 영역 */
@@ -117,4 +150,5 @@
     overflow-y: auto;
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-left: 35px
 }

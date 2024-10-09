@@ -108,3 +108,29 @@ body {
   text-align: center;
   padding: 10px;
 }
+
+/* 1. @font-face 설정 */
+@font-face {
+  font-family: 'GongGothicMedium';
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_20-10@1.0/GongGothicMedium.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* 2. body 전체에 폰트 적용 */
+body {
+  font-family: 'GongGothicMedium', sans-serif;
+}
+
+/* 3. button 기본 스타일 초기화 및 폰트 적용 */
+button {
+  all: unset;  /* 브라우저 기본 스타일 초기화 */
+  /*font-family: 'GongGothicMedium', sans-serif;*/
+  /*font-size: 14px;  !* 필요에 따라 크기 조정 *!*/
+  /*padding: 10px 20px;*/
+  /*background-color: #007BFF;  !* 버튼 배경색 *!*/
+  /*color: white;  !* 버튼 텍스트 색상 *!*/
+  /*border-radius: 4px;*/
+  /*cursor: pointer;*/
+  /*text-align: center;  !* 텍스트 가운데 정렬 *!*/
+}
