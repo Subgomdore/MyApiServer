@@ -6,6 +6,8 @@ const Loading = <div>Loading...</div>;
 
 const Main = lazy(() => import("../pages/MainPage"));
 const API_1 = lazy(() => import("../pages/upbit/UpbitMainPage"));
+const AboutPage = lazy(() => import("../pages/AboutPage"));
+const Contact = lazy(() => import("../pages/Contact"));
 
 const root = createBrowserRouter([
     {
@@ -19,6 +21,14 @@ const root = createBrowserRouter([
             {
                 path: "api/upbit/list",
                 element: <Suspense fallback={Loading}><API_1 /></Suspense>
+            },
+            {
+                path: "/about",
+                element: <Suspense fallback={Loading}><AboutPage /></Suspense>
+            },
+            {
+                path: "/Contact",
+                element: <Suspense fallback={Loading}><Contact /></Suspense>
             },
         ]
     }

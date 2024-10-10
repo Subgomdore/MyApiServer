@@ -1,7 +1,9 @@
 import React from 'react';
-import {motion} from 'framer-motion'; // framer-motion 라이브러리 추가
+import { motion } from 'framer-motion'; // framer-motion 라이브러리 추가
+import { useNavigate } from 'react-router-dom'; // 페이지 이동을 위한 react-router-dom 추가
 
 function MainPage(props) {
+    const navigate = useNavigate(); // 페이지 이동을 위한 useNavigate 훅 사용
 
     const container = {
         hidden: { opacity: 0 },
@@ -16,7 +18,9 @@ function MainPage(props) {
 
     const item = {
         hidden: { y: -50, opacity: 0 },
-        visible: { y: 0, opacity: 1 }
+        visible: { y: 0, opacity: 1 },
+        hover: { scale: 1.05 }, // 마우스 오버 시 약간의 확대 효과
+        tap: { scale: 0.95 } // 클릭 시 약간의 축소 효과
     };
 
     return (
@@ -38,6 +42,9 @@ function MainPage(props) {
                 {/* 각각의 박스에 고정된 크기와 애니메이션 설정 */}
                 <motion.div
                     variants={item}
+                    whileHover="hover"
+                    whileTap="tap"
+                    onClick={() => navigate('/api/upbit/list')} // 클릭 시 페이지 이동
                     style={{
                         background: '#f9f9f9',
                         padding: '40px',
@@ -46,6 +53,7 @@ function MainPage(props) {
                         textAlign: 'center',
                         width: '300px', // 고정된 너비
                         height: '250px', // 고정된 높이
+                        cursor: 'pointer' // 마우스 포인터 변경
                     }}
                 >
                     <h3 style={{ color: '#2196F3' }}>API 1</h3>
@@ -54,6 +62,9 @@ function MainPage(props) {
 
                 <motion.div
                     variants={item}
+                    whileHover="hover"
+                    whileTap="tap"
+                    onClick={() => navigate('/api2')} // 클릭 시 페이지 이동
                     style={{
                         background: '#f9f9f9',
                         padding: '40px',
@@ -62,6 +73,7 @@ function MainPage(props) {
                         textAlign: 'center',
                         width: '300px', // 고정된 너비
                         height: '250px', // 고정된 높이
+                        cursor: 'pointer' // 마우스 포인터 변경
                     }}
                 >
                     <h3 style={{ color: '#ff5722' }}>API 2</h3>
@@ -70,6 +82,9 @@ function MainPage(props) {
 
                 <motion.div
                     variants={item}
+                    whileHover="hover"
+                    whileTap="tap"
+                    onClick={() => navigate('/api3')} // 클릭 시 페이지 이동
                     style={{
                         background: '#f9f9f9',
                         padding: '40px',
@@ -78,6 +93,7 @@ function MainPage(props) {
                         textAlign: 'center',
                         width: '300px', // 고정된 너비
                         height: '250px', // 고정된 높이
+                        cursor: 'pointer' // 마우스 포인터 변경
                     }}
                 >
                     <h3 style={{ color: '#9C27B0' }}>API 3</h3>

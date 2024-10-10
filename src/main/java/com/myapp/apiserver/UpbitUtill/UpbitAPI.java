@@ -58,8 +58,9 @@ public class UpbitAPI {
     public List<Map<String, Object>> doFetchPriceAndSync(Map<String, String> paramsMap) throws IOException {
         OkHttpClient client = new OkHttpClient();
         Response response = null;
-        List<Map<String, Object>> coinPriceList = new ArrayList<Map<String, Object>>();
+        List<Map<String, Object>> coinPriceList = new ArrayList<>();
         String remainingReq = "";
+        String url = "";
         int min = 0;
         int sec = 0;
 
@@ -81,7 +82,7 @@ public class UpbitAPI {
 
             while (reqFlag) {
                 // URL 구성
-                String url = String.format("https://api.upbit.com/v1/candles/days?market=%s&to=%s&count=%s&convertingPriceUnit=%s",
+                url = String.format("https://api.upbit.com/v1/candles/days?market=%s&to=%s&count=%s&convertingPriceUnit=%s",
                         market, to, count, convertingPriceUnit);
 
                 // 요청 생성
@@ -134,6 +135,7 @@ public class UpbitAPI {
             }
         } catch (Exception e) {
             log.error(e);
+            log.error(url);
             e.printStackTrace();
         } finally {
             if (response != null) {

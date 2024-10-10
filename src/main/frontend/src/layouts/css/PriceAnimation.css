@@ -1,0 +1,23 @@
+.price-up {
+    color: #c84a31; /* 상승할 때 빨간색 */
+    transition: color 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
+    transform: scale(1); /* 기본 크기 */
+    opacity: 1; /* 기본 불투명도 */
+}
+
+.price-up.change {
+    transform: scale(1.03); /* 가격이 상승할 때 크기 증가 */
+    opacity: 0.9; /* 불투명도 약간 줄이기 */
+}
+
+.price-down {
+    color: #1261c4; /* 하락할 때 파란색 */
+    transition: color 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
+    transform: scale(1); /* 기본 크기 */
+    opacity: 1; /* 기본 불투명도 */
+}
+
+.price-down.change {
+    transform: scale(0.97); /* 가격이 하락할 때 크기 감소 */
+    opacity: 0.9; /* 불투명도 약간 줄이기 */
+}

@@ -111,15 +111,16 @@ body {
 
 /* 1. @font-face 설정 */
 @font-face {
-  font-family: 'GongGothicMedium';
-  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_20-10@1.0/GongGothicMedium.woff') format('woff');
-  font-weight: normal;
+  font-family: 'Freesentation-9Black';
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2404@1.0/Freesentation-9Black.woff2') format('woff2');
+  font-weight: 700;
   font-style: normal;
+  font-size: 20px;
 }
 
 /* 2. body 전체에 폰트 적용 */
 body {
-  font-family: 'GongGothicMedium', sans-serif;
+  font-family: 'Freesentation-9Black', sans-serif;
 }
 
 /* 3. button 기본 스타일 초기화 및 폰트 적용 */

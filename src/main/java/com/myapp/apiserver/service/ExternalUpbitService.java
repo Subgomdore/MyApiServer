@@ -13,6 +13,8 @@ public interface ExternalUpbitService {
 
     void doGetUpbitCoinPrice(String count);
 
+    void test();
+
     default UpbitCoinDTO entityToDTO(UpbitCoin entity) {
         return UpbitCoinDTO.builder()
                 .market(entity.getMarket())  // UpbitId의 market

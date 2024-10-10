@@ -9,12 +9,16 @@ import jakarta.transaction.Transactional;
 import jdk.jfr.Description;
 
 import java.util.List;
+import java.util.Map;
 
 @Transactional
 public interface UpbitService {
 
     @Description("전체코인리스트 가져오기")
     List<UpbitCoinDTO> getAllCoinList();
+
+    @Description("전체코인리스트 및 가격 가져오기")
+    Map<String, Object> getAllCoinAndPrice();
 
     @Description("전체코인리스트 캐싱작업")
     List<String> getAllCoinsWithCache();

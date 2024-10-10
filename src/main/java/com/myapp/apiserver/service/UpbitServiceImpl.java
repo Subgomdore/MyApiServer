@@ -1,18 +1,22 @@
 package com.myapp.apiserver.service;
 
-import com.myapp.apiserver.UpbitUtill.UpbitAPI;
 import com.myapp.apiserver.model.dto.UpbitAllDataResponseDTO;
 import com.myapp.apiserver.model.dto.UpbitCoinDTO;
+import com.myapp.apiserver.model.dto.UpbitCoinPriceDTO;
 import com.myapp.apiserver.model.entity.UpbitCoin;
 import com.myapp.apiserver.model.entity.UpbitCoinPrice;
 import com.myapp.apiserver.repository.UpbitCoinPriceRepository;
 import com.myapp.apiserver.repository.UpbitRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.modelmapper.ModelMapper;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -26,12 +30,47 @@ public class UpbitServiceImpl implements UpbitService {
 
     private final UpbitCoinPriceRepository upbitCoinPriceRepository;
 
+    private final ModelMapper modelMapper;
+
     @Override
     public List<UpbitCoinDTO> getAllCoinList() {
         List<UpbitCoin> upbitCoins = upbitRepository.findAll(Sort.by(Sort.Direction.ASC, "seq"));
         List<UpbitCoinDTO> upbitCoinDTOList = upbitCoins.stream().map(map -> entityToDTO(map)).collect(Collectors.toList());
         return upbitCoinDTOList;
     }
+
+    @Override
+    public Map<String, Object> getAllCoinAndPrice() {
+        List<UpbitCoin> upbitCoins = upbitRepository.findAll(Sort.by(Sort.Direction.ASC, "seq"));
+
+        List<UpbitCoinDTO> upbitCoinDTO = upbitCoins.stream()
+                .map(e -> modelMapper.map(e, UpbitCoinDTO.class)).collect(Collectors.toList());
+
+        LocalDate currentDate = LocalDate.now();
+        LocalTime currentTime = LocalTime.now();
+
+        // 업비트 거래종료 오전9시: 비교일 생성
+        LocalTime upbitTime = LocalTime.of(9, 0);
+
+        // 오전9시 이전일경우 (00 ~ 08:59)
+        if (currentTime.isBefore(upbitTime)) {
+            // 오늘날짜 -1일이 조회타겟대상
+            currentDate= currentDate.minusDays(1);
+        }
+
+        String date = currentDate.toString();
+
+        List<UpbitCoinPrice> upbitCoinPrices = upbitRepository.getTodayPriceList(date);
+        List<UpbitCoinPriceDTO> upbitCoinPriceDTO = upbitCoinPrices.stream()
+                .map(e -> modelMapper.map(e, UpbitCoinPriceDTO.class)).collect(Collectors.toList());
+
+        Map<String, Object> resMap = new HashMap<>();
+        resMap.put("COIN", upbitCoinDTO);
+        resMap.put("PRICE", upbitCoinPriceDTO);
+
+        return resMap;
+    }
+
 
     @Override
     @Cacheable(value = "coinCache")

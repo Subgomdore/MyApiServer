@@ -3,7 +3,9 @@ package com.myapp.apiserver.controller;
 import com.myapp.apiserver.websocket.UpbitWebSocketClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -15,6 +17,7 @@ import java.util.function.Consumer;
 @RestController
 @Log4j2
 @RequiredArgsConstructor
+@RequestMapping("/api/sse/")
 public class UpbitSseController {
 
     private final UpbitWebSocketClient webSocketClient;
@@ -30,7 +33,14 @@ public class UpbitSseController {
         }
     }
 
-    @GetMapping("/api/sse/price")
+    @GetMapping("/ping")
+    public ResponseEntity<Void> ping() {
+        // ping 요청을 받았을 때 아무 작업도 하지 않음
+        log.info("SSE connection .. ping!");
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/price")
     public SseEmitter streamPrices() {
         SseEmitter emitter = new SseEmitter(0L); // 무제한 타임아웃
         ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -63,4 +73,5 @@ public class UpbitSseController {
 
         return emitter;
     }
+
 }

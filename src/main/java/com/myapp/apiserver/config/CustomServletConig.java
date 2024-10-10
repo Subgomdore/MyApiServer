@@ -1,6 +1,5 @@
 package com.myapp.apiserver.config;
 
-
 import com.myapp.apiserver.component.ClientIpInterceptor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
