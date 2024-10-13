@@ -74,6 +74,8 @@ public class UpbitWebSocketClient {
         @Override
         public void onMessage(WebSocket webSocket, ByteString bytes) {
             String message = bytes.string(StandardCharsets.UTF_8);
+            message = message.replaceAll("\"code\"", "\"market\"");
+
             // SSE 연결이 있는 경우에만 데이터를 전송
             synchronized (sseListeners) {
                 Iterator<Consumer<String>> iterator = sseListeners.iterator();

@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UpbitCoinPriceDTO {
+public class UpbitCoinDayPriceDTO {
 
     private String market;
     private String candle_date_time_kst;

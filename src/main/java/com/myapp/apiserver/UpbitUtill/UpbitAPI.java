@@ -5,66 +5,75 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.myapp.apiserver.component.CustomJsonDeserializer;
+import com.myapp.apiserver.model.dto.api.ApiResponse;
 import jdk.jfr.Description;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 import org.apache.commons.collections4.MapUtils;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Log4j2
 @Component
+@RequiredArgsConstructor
 public class UpbitAPI {
 
-    @Description("전체코인목록조회 및 등록")
-    public List<Map<String, Object>> doRegisterAllCoinList() {
-        Response response = null;
+    private final ApiClientUtil apiClientUtil;
+
+    @Description("시세 종목 조회 > 종목 코드조회")
+    public List<Map<String, Object>> getMarketCode() {
+        String url = "https://api.upbit.com/v1/market/all?isDetails=false";
+        String jsonResponse;
         List<Map<String, Object>> coinListMap = null;
 
         try {
-            OkHttpClient client = new OkHttpClient();
-            Request request = new Request.Builder()
-                    .url("https://api.upbit.com/v1/market/all?isDetails=false")
-                    .get()
-                    .addHeader("accept", "application/json")
-                    .build();
-            response = client.newCall(request).execute();
-            if (response.isSuccessful()) {
-                String responseBody = response.body().string();
-                coinListMap = new Gson().fromJson(responseBody, List.class);
-            } else {
-                log.error("Error: " + response.code());
-            }
-        } catch (Exception e) {
-            log.error(e);
+            ApiResponse apiResponse = apiClientUtil.executeGetRequest(url);
+            // DTO를 RES했으니까 getter를 통해 getBody()값을 가져온다.
+            jsonResponse = apiResponse.getBody();
+            coinListMap = new Gson().fromJson(jsonResponse, List.class);
+        } catch (IOException e) {
             e.printStackTrace();
-
-        } finally {
-            if (response != null) {
-                response.close();
-            }
-
-            return coinListMap;
         }
+
+        return coinListMap;
     }
 
-    @Description("코인가격 동기화")
-    public List<Map<String, Object>> doFetchPriceAndSync(Map<String, String> paramsMap) throws IOException {
-        OkHttpClient client = new OkHttpClient();
-        Response response = null;
-        List<Map<String, Object>> coinPriceList = new ArrayList<>();
-        String remainingReq = "";
-        String url = "";
+    @Description("시세 캔들 조회 > 분(Minute) 캔들")
+    public void getCandleByMinute() {
+
+    }
+
+    @Description("시세 캔들조회 > 일(Day) 캔들")
+    public void getCandleByDay() {
+
+    }
+
+    @Description("시세 캔들조회 > 주(Week) 캔들")
+    public void getCandleByWeek() {
+
+    }
+
+    @Description("시세 캔들조회 > 월(Month) 캔들")
+    public List<Map<String, Object>> getCandleByDay(Map<String, String> paramsMap) throws IOException {
+
+        String market = paramsMap.get("market"); // 마켓 코드
+        String to = MapUtils.getString(paramsMap, "to", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + "T09:00:00");
+        String count = MapUtils.getString(paramsMap, "count", "200");  // count가 없으면 기본값 "200"
+        String convertingPriceUnit = MapUtils.getString(paramsMap, "convertingPriceUnit", "KRW"); // 종가 환산 화폐 단위, 생략 가능
+        String url = null;
+
+
         int min = 0;
         int sec = 0;
 
-
+        List<Map<String, Object>> coinPriceList = new ArrayList<>();
         try {
             // 필수 매개변수
             if (paramsMap.get("market").isEmpty()) {
@@ -72,61 +81,47 @@ public class UpbitAPI {
                 throw new Exception("The request parameters are invalid.");
             }
 
-            String market = paramsMap.get("market"); // 마켓 코드
-            String to = MapUtils.getString(paramsMap, "to",
-                    LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + "T09:00:00");
-            String count = MapUtils.getString(paramsMap, "count", "200");  // count가 없으면 기본값 "200"
-            String convertingPriceUnit = MapUtils.getString(paramsMap, "convertingPriceUnit", "KRW"); // 종가 환산 화폐 단위, 생략 가능
-
             boolean reqFlag = true;
-
             while (reqFlag) {
-                // URL 구성
                 url = String.format("https://api.upbit.com/v1/candles/days?market=%s&to=%s&count=%s&convertingPriceUnit=%s",
                         market, to, count, convertingPriceUnit);
+                ApiResponse apiResponse = apiClientUtil.executeGetRequest(url);
+                if (!apiResponse.getBody().isBlank()) {
 
-                // 요청 생성
-                Request request = new Request.Builder()
-                        .url(url)
-                        .get()
-                        .addHeader("accept", "application/json")
-                        .build();
-
-                response = client.newCall(request).execute();
-                if (response.isSuccessful()) {
-                    String responseBody = response.body().string();
+                    String jsonResponse = apiResponse.getBody();
                     CustomJsonDeserializer customJson = new CustomJsonDeserializer();
 
-                    // 남은 요청횟수 계산
-                    remainingReq = response.header("Remaining-Req");
-                    Map<String, Integer> remainingReqCount = calculateRemainingCount(remainingReq);
+                    Map<String, String> headerMap = apiResponse.getHeaders();
+                    String requestLimit = headerMap.get("remaining-req");
+
+                    Map<String, Integer> remainingReqCount = calculateRemainingCount(requestLimit);
                     if (!remainingReqCount.isEmpty()) {
                         min = remainingReqCount.get("min");
                         sec = remainingReqCount.get("sec");
                     }
+                    // JsonString 파싱
+                    JsonElement jsonElement = JsonParser.parseString(jsonResponse);
 
-                    // STATUS 200 이지만 ResponseData가 없을경우 => 너무 예전기간 조회
-                    JsonElement jsonElement = JsonParser.parseString(responseBody);
                     if (jsonElement.isJsonArray()) {
                         JsonArray jsonArray = jsonElement.getAsJsonArray();
-                        if (jsonArray.size() == 0) {
+
+                        coinPriceList.addAll(customJson.parseJsonArray(jsonResponse));
+
+                        // 다시 조회할 데이터를 갱신하고
+                        String changeTo = (String) coinPriceList.get(coinPriceList.size() - 1).get("candle_date_time_kst") + ":00:00";
+                        if (to.equals(changeTo)) {
+                            // 더이상 마지막 날짜의 데이터가, 똑같을경우 마지막데이터까지 가져왔으니 flag 변경
                             reqFlag = false;
                         } else {
-                            coinPriceList.addAll(customJson.parseJsonArray(responseBody));
-                            String changeTo = (String) coinPriceList.get(coinPriceList.size() - 1).get("candle_date_time_kst") + ":00:00";
-                            if (to.equals(changeTo)) {
-                                reqFlag = false;
-                            } else {
-                                to = changeTo;
-                            }
+                            // 날짜가 다를경우 데이터 갱신후 while문 동작
+                            log.info(to);
+                            log.info(changeTo);
+                            to = changeTo;
                         }
                     }
-                } else {
-                    String err = "fetchPriceAndSync Request failed >> " + response.code();
-                    throw new Exception(err);
                 }
 
-                if (min < 1 || sec < 1){
+                if (min < 1 || sec < 1) {
                     Thread.sleep(1000);
                 }
 
@@ -138,43 +133,75 @@ public class UpbitAPI {
             log.error(url);
             e.printStackTrace();
         } finally {
-            if (response != null) {
-                response.close();
-            }
 
             return coinPriceList;
         }
     }
 
+    @Description("시세 체결 조회 > 최근 체결 내역")
+    public void getRecentSettlements() {
+
+    }
+
+    @Description("시세 현자가(Ticker) 조회 > 종목단위 현재가 정보")
+    public List<Map<String, Object>> getCurrentPriceByTicker(List<String> coinList) {
+        String markets = "";
+
+        if (coinList != null && coinList.size() > 0) {
+            markets = String.join(",", coinList);
+        }
+
+        String url = "https://api.upbit.com/v1/ticker?markets=" + markets;
+        log.info(url);
+        List<Map<String, Object>> coinListMap = null;
+        try {
+            ApiResponse apiResponse = apiClientUtil.executeGetRequest(url);
+            String jsonResponse = apiResponse.getBody();
+            Map<String, String> headerMap = apiResponse.getHeaders();
+            coinListMap = new Gson().fromJson(jsonResponse, List.class);
+
+            String requestLimit = headerMap.get("remaining-req");
+            Map<String, Integer> remainingReqCount = calculateRemainingCount(requestLimit);
+
+            if (remainingReqCount.get("min") < 1 || remainingReqCount.get("sec") < 1) {
+                Thread.sleep(1000);
+            }
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        return coinListMap;
+    }
+
+    @Description("시세 현자가(Ticker) 조회 > 마켓 단위 현재가 정보")
+    public void getCurrentPriceByMarket() {
+
+    }
+
+
+    @Description("API 요청 회수 계산")
     private Map<String, Integer> calculateRemainingCount(String remainingReq) {
         Map<String, Integer> resultMap = new HashMap<>();
+        if (remainingReq == null || remainingReq.isBlank()) {
+            log.error("Response header data is null! Please check the parameters.");
+            return resultMap;
+        }
+
         try {
-            if (remainingReq  == null && remainingReq.isBlank()) {
-                throw new Exception("Response header data is null! Please check the parameters.");
-            }
-
             String[] parts = remainingReq.split(";");
-
-            String minValue = "";
-            String secValue = "";
-
             for (String part : parts) {
                 part = part.trim();
-                if (part.startsWith("min=")) { // Array가 순서보장이 안되기때문에 조건문으로 값을 구한다.
-                    minValue = part.substring(4);
+                if (part.startsWith("min=")) {
+                    resultMap.put("min", Integer.valueOf(part.substring(4)));
                 } else if (part.startsWith("sec=")) {
-                    secValue = part.substring(4);
+                    resultMap.put("sec", Integer.valueOf(part.substring(4)));
                 }
             }
-
-            resultMap.put("min", Integer.valueOf(minValue));
-            resultMap.put("sec", Integer.valueOf(secValue));
-
-            return resultMap;
         } catch (Exception e) {
-            log.error(e);
+            log.error("Error parsing remaining request header: {}", e.getMessage());
             e.printStackTrace();
-            return null;
         }
+
+        return resultMap;
     }
 }

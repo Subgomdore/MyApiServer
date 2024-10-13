@@ -11,7 +11,7 @@ import java.io.Serializable;
 @NoArgsConstructor  // 기본 생성자 자동 생성
 @AllArgsConstructor  // 모든 필드를 포함한 생성자 자동 생성
 @EqualsAndHashCode  // equals()와 hashCode() 자동 생성
-public class UpbitCoinPriceId implements Serializable {
+public class UpbitCoinDayPriceId implements Serializable {
 
     private String market;
     private String candle_date_time_kst;

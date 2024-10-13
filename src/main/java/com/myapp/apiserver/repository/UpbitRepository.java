@@ -1,7 +1,7 @@
 package com.myapp.apiserver.repository;
 
 import com.myapp.apiserver.model.entity.UpbitCoin;
-import com.myapp.apiserver.model.entity.UpbitCoinPrice;
+import com.myapp.apiserver.model.entity.UpbitCoinDayPrice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,6 +16,7 @@ public interface UpbitRepository extends JpaRepository<UpbitCoin, Long> {
     @Query("SELECT market FROM UpbitCoin")
     List<String> findAllCoinCodes();
 
-    @Query("SELECT u FROM UpbitCoinPrice u WHERE u.candle_date_time_kst = :date")
-    List<UpbitCoinPrice> getTodayPriceList(@Param("date") String date);
+    @Query("SELECT u FROM UpbitCoinDayPrice u WHERE u.candle_date_time_kst = :date")
+    List<UpbitCoinDayPrice> getTodayPriceList(@Param("date") String date);
+
 }

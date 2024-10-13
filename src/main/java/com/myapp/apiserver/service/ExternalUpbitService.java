@@ -1,9 +1,9 @@
 package com.myapp.apiserver.service;
 
 import com.myapp.apiserver.model.dto.UpbitCoinDTO;
-import com.myapp.apiserver.model.dto.UpbitCoinPriceDTO;
+import com.myapp.apiserver.model.dto.UpbitCoinDayPriceDTO;
 import com.myapp.apiserver.model.entity.UpbitCoin;
-import com.myapp.apiserver.model.entity.UpbitCoinPrice;
+import com.myapp.apiserver.model.entity.UpbitCoinDayPrice;
 import jakarta.transaction.Transactional;
 
 @Transactional
@@ -12,8 +12,6 @@ public interface ExternalUpbitService {
     void doGetUpbitCoinList();
 
     void doGetUpbitCoinPrice(String count);
-
-    void test();
 
     default UpbitCoinDTO entityToDTO(UpbitCoin entity) {
         return UpbitCoinDTO.builder()
@@ -39,8 +37,8 @@ public interface ExternalUpbitService {
                 .build();
     }
 
-    default UpbitCoinPriceDTO entityToDTO(UpbitCoinPrice entity) {
-        return UpbitCoinPriceDTO.builder()
+    default UpbitCoinDayPriceDTO entityToDTO(UpbitCoinDayPrice entity) {
+        return UpbitCoinDayPriceDTO.builder()
                 .market(entity.getMarket())  // 코인 마켓 (예: KRW-BTC)
                 .candle_date_time_kst(entity.getCandle_date_time_kst())  // KST 시간의 캔들 데이터
                 .candle_date_time_utc(entity.getCandle_date_time_utc())  // UTC 시간의 캔들 데이터
@@ -58,8 +56,8 @@ public interface ExternalUpbitService {
     }
 
     // UpbitCoinPriceDTO -> UpbitCoinPrice Entity 변환
-    default UpbitCoinPrice DTOtoEntity(UpbitCoinPriceDTO dto) {
-        return UpbitCoinPrice.builder()
+    default UpbitCoinDayPrice DTOtoEntity(UpbitCoinDayPriceDTO dto) {
+        return UpbitCoinDayPrice.builder()
                 .market(dto.getMarket())  // 코인 마켓 (예: KRW-BTC)
                 .candle_date_time_kst(dto.getCandle_date_time_kst())  // KST 시간의 캔들 데이터
                 .candle_date_time_utc(dto.getCandle_date_time_utc())  // UTC 시간의 캔들 데이터

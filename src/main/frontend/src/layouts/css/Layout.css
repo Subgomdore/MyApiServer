@@ -152,3 +152,15 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     margin-left: 35px
 }
+
+/* 실시간 시간 표시 스타일 */
+.current-time {
+    font-size: 16px;
+    font-weight: bold;
+    color: #ffffff;
+    white-space: nowrap; /* 시간이 줄 바꿈되지 않도록 */
+    margin-left: auto; /* 시간을 우측으로 밀기 */
+    display: flex;
+    align-items: center;
+    justify-content: flex-end; /* 우측 끝 정렬 */
+}

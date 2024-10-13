@@ -20,7 +20,7 @@ public class ClientIpInterceptor implements HandlerInterceptor {
         }
 
         LocalDate currentDate = LocalDate.now();
-        log.warn("currentData: " + currentDate + "/ Client IP: " + clientIp);
+        log.debug("currentData: " + currentDate + "/ Client IP: " + clientIp);
         return true;
     }
 }

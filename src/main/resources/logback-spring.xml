@@ -4,17 +4,29 @@
     <!-- 콘솔에 로그 출력 설정 -->
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+            <!-- 로그 레벨과 로그 메시지 본문에 하이라이트 적용하기 -->
+            <pattern>
+                %d{HH:mm:ss.SSS} [%thread] %highlight(%-5level) %logger{36} - %highlight(%msg%n)
+            </pattern>
+            <charset>UTF-8</charset>
         </encoder>
     </appender>
 
-    <!-- 파일에 로그 출력 설정 -->
+    <!-- 파일에 로그 출력 설정 (파일 크기 기준으로 롤링 설정) -->
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>D:/logs/spring-boot-app.log</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>D:/logs/spring-boot-app-%d{yyyy-MM-dd}.log</fileNamePattern>
-            <maxHistory>30</maxHistory>
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+            <!-- 파일 이름 패턴 (순번에 따라 덮어쓰도록 설정) -->
+            <FileNamePattern>D:/logs/spring-boot-app.%i.log</FileNamePattern>
+            <minIndex>1</minIndex>
+            <maxIndex>1</maxIndex> <!-- 하나의 로그 파일만 유지 (덮어쓰기 효과) -->
         </rollingPolicy>
+
+        <!-- 로그 파일 크기가 100MB가 넘으면 롤링 -->
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <maxFileSize>100MB</maxFileSize>
+        </triggeringPolicy>
+
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
         </encoder>

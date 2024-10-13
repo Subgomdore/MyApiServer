@@ -4,20 +4,17 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
 import jakarta.persistence.Table;
+import lombok.*;
 import org.hibernate.annotations.Comment;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Entity
-@Getter
+@Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "upbit_price")
-@IdClass(UpbitCoinPriceId.class)
-public class UpbitCoinPrice {
+@Table(name = "upbit_day_price")
+@IdClass(UpbitCoinDayPriceId.class)
+public class UpbitCoinDayPrice {
 
     @Id
     @Comment("코인 마켓 (예: KRW-BTC)")

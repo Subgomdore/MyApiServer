@@ -25,19 +25,19 @@ function AboutPage() {
 
                 {/* 이름 및 간단한 소개 */}
                 <motion.div variants={item} className="about-header">
-                    <h1>홍길동</h1>
+                    <h1>황인성</h1>
                     <p>아무거또몰라요 개발자 | GPT로 날로만드는 개발자입니다. </p>
+                    <p>개발중인 프로젝트이지만 너무 휑해서 적어놨어요. </p>
                 </motion.div>
 
                 {/* 연락처 정보 */}
                 <motion.div variants={item} className="about-section">
                     <h2>연락처 정보</h2>
                     <ul>
-                        <li><strong>이메일:</strong> honggildong@example.com</li>
-                        <li><strong>전화번호:</strong> +82-10-1234-5678</li>
+                        <li><strong>이메일:</strong> joy2is90@gmail.com / joy2is@naver.com</li>
+                        <li><strong>전화번호:</strong> +82-10-3974-4656</li>
                         <li><strong>위치:</strong> 서울, 대한민국</li>
-                        <li><strong>LinkedIn:</strong> linkedin.com/in/honggildong</li>
-                        <li><strong>GitHub:</strong> github.com/honggildong</li>
+                        <li><strong>GitHub:</strong> github.com/Subgomdore </li>
                     </ul>
                 </motion.div>
 
@@ -45,21 +45,17 @@ function AboutPage() {
                 <motion.div variants={item} className="about-section">
                     <h2>경력 사항</h2>
                     <div className="experience-item">
-                        <h3>ABC Corp, 시니어 개발자</h3>
-                        <p>2018년 1월 - 현재</p>
+                        <h3>세포아소프트, 시니어 개발자</h3>
+                        <p>2023년 1월 - 2024년 9월 (1년8개월) </p>
                         <ul>
-                            <li>확장성 높은 웹 애플리케이션 개발, React와 Node.js 사용</li>
-                            <li>프로젝트 요구사항 정의 및 크로스 기능 팀과 협업</li>
-                            <li>주니어 개발자 멘토링 및 코드 리뷰</li>
-                        </ul>
-                    </div>
-                    <div className="experience-item">
-                        <h3>XYZ Solutions, 풀스택 개발자</h3>
-                        <p>2015년 3월 - 2017년 12월</p>
-                        <ul>
-                            <li>클라이언트 및 서버 측 애플리케이션 개발 및 유지보수</li>
-                            <li>JavaScript, Python, AWS를 활용한 프로젝트 진행</li>
-                            <li>최적화 기법을 통해 성능과 확장성을 30% 개선</li>
+                            <li> DX사업부 전자인장팀 SaaS 운영서비스 담당 </li>
+                            <li> On-Premise 지원 및 솔루션 공통기능 개발 </li>
+                            <li> On-Premise 운영지원 및 트러블슈팅 </li>
+                            <li> 전자인장팀 신규입사자 프레임워크 교육 및 지원</li>
+                            <li> 참여프로젝트 : 동아제약 / 포스코플로우 / 이루다 / 이토추마루베니 / SBW생명과학 / 한국정보화진흥원(NIA)</li>
+                            <li>  BASS / 코오롱LSI / 세포아소프트 / 현대회계법인 / 세종테크노파크 / COSMAX </li>
+
+
                         </ul>
                     </div>
                 </motion.div>
@@ -68,10 +64,10 @@ function AboutPage() {
                 <motion.div variants={item} className="about-section">
                     <h2>기술 스택</h2>
                     <ul>
-                        <li><strong>언어:</strong> JavaScript, Python, Java</li>
-                        <li><strong>프레임워크:</strong> React, Node.js, Express, Django</li>
+                        <li><strong>언어:</strong> JavaScript, Java </li>
+                        <li><strong>프레임워크:</strong> React, SpringBoot</li>
                         <li><strong>도구:</strong> Git, Docker, AWS, Jenkins</li>
-                        <li><strong>데이터베이스:</strong> MongoDB, PostgreSQL, MySQL</li>
+                        <li><strong>데이터베이스:</strong> Oracle, MS SQL, MariaDB</li>
                     </ul>
                 </motion.div>
 
@@ -79,8 +75,8 @@ function AboutPage() {
                 <motion.div variants={item} className="about-section">
                     <h2>학력 사항</h2>
                     <div className="education-item">
-                        <h3>컴퓨터공학 학사</h3>
-                        <p>ABC 대학교, 2011 - 2015</p>
+                        <h3>사우고등학교 졸업</h3>
+                        <p>2006 - 2008</p>
                     </div>
                 </motion.div>
             </motion.div>

@@ -16,7 +16,7 @@ public class BackProcessScheduler {
     private final ExternalUpbitService externalUpbitService;
     private final UpbitService upbitService;
 
-    @Scheduled(cron = "0 0 9 * * ?")
+    @Scheduled(cron = "15 32 20 * * ?")
     @Description("업비트 코인리스트 동기화 / 업비트 코인리스트 가격 동기화 :: 이전날짜의 정보들을 이관")
     public void performTaskAtNineAm() {
 
@@ -27,17 +27,18 @@ public class BackProcessScheduler {
         log.warn("BackProcessScheduler >> UPBIT COIN_PRICE SYNC COMPLETE");
     }
 
-    @Scheduled(cron = "0 10 9 * * ?")
-    @Description("0초 10분 9시 DB동기화 이후 캐시재갱신")
-    public void updateCoinCache() {
-        upbitService.getAllCoinsWithCache();
-    }
+//    @Scheduled(cron = "0 10 9 * * ?")
+//    @Description("0초 10분 9시 DB동기화 이후 캐시재갱신")
+//    public void updateCoinCache() {
+//        upbitService.getAllCoinsWithCache();
+//    }
 
-    @Scheduled(cron = "0 0/10 * * * ?")
-    @Description("0초 정각/10분마다 모든시간 * * *")
-    public void refreshPrice() {
-        externalUpbitService.doGetUpbitCoinPrice("1");
-        log.warn("BackProcessScheduler >> refreshPrice() COMPLETE");
-    }
+//    @Scheduled(cron = "0 0/30 * * * ?")
+//    @Description("0초 정각/30분마다 모든시간 * * *")
+//        public void refreshPrice() {
+//            externalUpbitService.doGetUpbitCoinPrice("1");
+//            log.warn("BackProcessScheduler >> refreshPrice() COMPLETE");
+//    }
+
 }
 
