@@ -1,5 +1,5 @@
 import {lazy, Suspense} from "react";
-import Layout from "../layouts/Layout"; // Layout 컴포넌트 추가
+import CommonLayout from "../layouts/CommonLayout"; // CommonLayout 컴포넌트 추가
 const { createBrowserRouter } = require("react-router-dom");
 
 const Loading = <div>Loading...</div>;
@@ -12,7 +12,7 @@ const Contact = lazy(() => import("../pages/Contact"));
 const root = createBrowserRouter([
     {
         path: "/",
-        element: <Layout />,
+        element: <CommonLayout />,
         children: [
             {
                 path: "",

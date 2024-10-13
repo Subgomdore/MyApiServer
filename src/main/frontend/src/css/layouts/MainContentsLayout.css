@@ -1,0 +1,43 @@
+/* 메인 콘텐츠 영역 */
+.main-content {
+    background-color: #ffffff;
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-left: 40px;
+}
+
+/* 실시간 시간 표시 스타일 */
+.current-time {
+    font-size: 16px;
+    font-weight: bold;
+    color: #ffffff;
+    white-space: nowrap;
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+/* 애니메이션 */
+@keyframes bounceIn {
+    0% {
+        opacity: 0;
+        transform: translateY(-100%);
+    }
+    50% {
+        opacity: 0.5;
+        transform: translateY(10%);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.api-item {
+    animation: bounceIn 0.6s ease-in-out;
+    margin-bottom: 10px;
+}

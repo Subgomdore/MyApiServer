@@ -4,51 +4,89 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
-    background-color: #f8f9fa; /* 희미한 배경색 추가 */
-    padding: 10px 20px; /* 여백 추가 */
-    border-radius: 8px; /* 둥근 모서리 추가 */
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* 희미한 그림자 */
+    background-color: #f1f1f1;
+    padding: 12px 24px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+    max-width: 90%;
+    margin: 0 auto 20px auto;
 }
 
-/* 각 버튼의 기본 스타일 */
+/* 버튼 그룹을 가로로 정렬 */
+.button-group {
+    display: flex;
+    gap: 12px;
+}
+
+/* 버튼 스타일 */
 .search-and-buttons button {
-    margin-right: 10px;
-    padding: 8px 16px;
-    background-color: #007bff;
+    padding: 14px 28px;
+    background-color: #208EC0; /* 네이비 색상 */
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    font-size: 16px;
+    font-weight: bold;
     cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
+    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
 }
 
+/* 마지막 버튼의 마진 제거 */
 .search-and-buttons button:last-child {
     margin-right: 0;
 }
 
+/* 버튼 호버 효과 */
 .search-and-buttons button:hover {
-    background-color: #0056b3;
-    transform: scale(1.05);
+    background-color: #2c3e50; /* 더 어두운 네이비 */
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* 버튼 활성화 효과 (클릭 시) */
+.search-and-buttons button:active {
+    background-color: #1f2d3d; /* 클릭 시 어두운 네이비 */
+    transform: translateY(1px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 /* 검색바 스타일 */
 .search-and-buttons input {
-    padding: 10px;
-    width: 300px;
-    margin-right: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
+    padding: 12px;
+    width: 320px;
+    margin-right: 12px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
     background-color: #ffffff;
-    box-shadow: inset 0px 2px 4px rgba(0, 0, 0, 0.05);
+    box-shadow: inset 0px 2px 6px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.3s ease;
+}
+
+.search-and-buttons input:focus {
+    border-color: #34495e; /* 포커스 시 네이비 */
+    box-shadow: 0 0 0 4px rgba(52, 73, 94, 0.2); /* 포커스 시 외곽선 */
 }
 
 /* 필터 스타일 */
 .search-and-buttons select {
-    padding: 10px;
-    margin-left: 10px;
-    border-radius: 5px;
-    border: 1px solid #ddd;
+    padding: 12px;
+    border-radius: 8px;
+    border: 2px solid #ddd;
+    background-color: white;
+    color: #333;
+    transition: border-color 0.3s ease;
 }
+
+.search-and-buttons select:focus {
+    border-color: #34495e;
+    box-shadow: 0 0 0 4px rgba(52, 73, 94, 0.2);
+}
+
+
+/*
+******************************** 헤더영역 CSS ********************************
+*/
 
 /* 전체 리스트 컨테이너 */
 .market-lists {
@@ -100,7 +138,7 @@
     display: flex;
     justify-content: space-between;
     border-bottom: 1px solid #ccc;
-    padding: 10px;
+    padding: 2px;
     align-items: center;
     height: 50px;
     font-size: 13px;
@@ -137,3 +175,32 @@
         max-width: 100%;
     }
 }
+
+/************************** 가격 변동시 발생하는 CSS */
+.price-up {
+    color: #c84a31; /* 상승할 때 빨간색 */
+    transition: color 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
+    transform: scale(1); /* 기본 크기 */
+    opacity: 1; /* 기본 불투명도 */
+}
+
+.price-up.change {
+    transform: scale(1.03); /* 가격이 상승할 때 크기 증가 */
+    opacity: 0.9; /* 불투명도 약간 줄이기 */
+}
+
+.price-down {
+    color: #1261c4; /* 하락할 때 파란색 */
+    transition: color 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
+    transform: scale(1); /* 기본 크기 */
+    opacity: 1; /* 기본 불투명도 */
+}
+
+.price-down.change {
+    transform: scale(0.97); /* 가격이 하락할 때 크기 감소 */
+    opacity: 0.9; /* 불투명도 약간 줄이기 */
+}
+
+
+/**/
+

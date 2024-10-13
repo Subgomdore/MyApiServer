@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {getUpbitList} from '../../api/Api';
-import '../../layouts/css/UpbitMainPage.css';
-import '../../layouts/css/PriceAnimation.css';
+import '../../css/pages/upbit/UpbitMainPage.css';
+import '../../css/pages/upbit/PriceAnimation.css';
 import SearchAndButtons from "../../components/SearchAndButtons";
 import MarketList from "../../components/MarketList";
 
@@ -10,6 +10,11 @@ function UpbitMainPage() {
     const [selectedMarket, setSelectedMarket] = useState('all');
     const [filteredData, setFilteredData] = useState({krwList: [], btcList: [], usdtList: []});
     const [btcPrice, setBtcPrice] = useState(0);
+    const [selectedPanel, setSelectedPanel] = useState(null);
+
+    const handlePanelClick = (panel) => {
+        setSelectedPanel(panel === selectedPanel ? null : panel);
+    };
 
     useEffect(() => {
         const fetchData = async () => {

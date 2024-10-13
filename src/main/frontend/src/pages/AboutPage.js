@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import '../layouts/css/about.css'; // CSS 파일을 import
+import '../css/pages/AboutPage.css'; // CSS 파일을 import
 
 function AboutPage() {
     const container = {

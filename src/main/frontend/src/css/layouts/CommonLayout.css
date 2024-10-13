@@ -1,0 +1,18 @@
+/* 전체 레이아웃 */
+.layout {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.main-wrapper {
+    margin-left: 210px;
+    width: calc(100% - 210px);
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    transition: margin-left 0.3s ease;
+}
+
+
+

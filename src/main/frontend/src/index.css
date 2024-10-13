@@ -22,7 +22,7 @@ body {
   min-height: 100vh;
   flex-direction: column;
 }
-/* Header */
+/* HeaderLayout */
 .header {
   background-color: #333;
   color: #fff;
@@ -48,7 +48,7 @@ body {
 .header nav a:hover {
   color: #fff;
 }
-/* Sidebar */
+/* SidebarLayout */
 .content {
   display: flex;
   flex: 1;
