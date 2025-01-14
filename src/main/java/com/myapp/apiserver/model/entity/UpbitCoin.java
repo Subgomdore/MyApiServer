@@ -28,7 +28,7 @@ public class UpbitCoin {
     private String english_name;  // 코인의 영어 이름
 
     @Column(nullable = false, updatable = false)
-    @Comment("삭제 여부 플래그 (기본값 'N')")
+    @Comment("삭제 여부 플래그 기본값 N")
     private String del_flag;  // 삭제 여부
 
     @Column(nullable = false, updatable = false)
