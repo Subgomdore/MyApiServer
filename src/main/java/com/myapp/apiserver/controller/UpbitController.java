@@ -16,25 +16,29 @@ import java.util.List;
 @RestController
 @Log4j2
 @RequiredArgsConstructor
-@RequestMapping("/api/upbit")
 public class UpbitController {
 
     private final UpbitService upbitService;
-    private final ExternalUpbitService externalUpbitService;
 
-    @GetMapping("/list")
+    @GetMapping("/filter-popup")
+    public void getFilterData() {
+
+    }
+
+    @GetMapping("/api/upbit/list")
     @Description("업비트 코인리스트")
     public List<UpbitCoinDTO> getAllCoinList() {
         List<UpbitCoinDTO> resDto = upbitService.getAllCoinList();
         return resDto;
     }
 
-    @GetMapping("/priceList")
+    @GetMapping("/api/upbit/priceList")
     @Description("업비트 코인리스트")
     public List<UpbitAllDataResponseDTO> getAllCoinAndPrice() {
         log.info("/priceList");
         return  upbitService.getAllCoinAndPrice();
     }
+
 
     //fetchPriceAndSync
     // Ackey : bAHvpGQ7rJR8PxsF0FHuxtaUzZY9B6da80epyPYh

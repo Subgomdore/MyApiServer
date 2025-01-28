@@ -28,8 +28,6 @@ function SidebarLayout() {
                     {isOpen && (
                         <ul className="sidebar-menu">
                             <li><Link to="/api/upbit/list"> <FcInfo /> 업비트 API </Link></li>
-                            <li><a href="#"><FcInfo /> 제2의 툰코 </a></li>
-                            <li><a href="#"><FcInfo /> 나만의 누누티비 </a></li>
                         </ul>
                     )}
                 </motion.div>
@@ -45,9 +43,9 @@ function SidebarLayout() {
                 >
                     {isOpen && (
                         <ul className="sidebar-menu">
-                            <li><Link to="#"> <FcInfo /> 나만의 툰코 </Link></li>
-                            <li><a href="#"><FcInfo /> 나만의 누누티비 </a></li>
-                            <li><a href="#"><FcInfo /> 메모장 맨날 열기 귀찮아서 게시판씀 </a></li>
+                            <li><Link to="#"> <FcInfo /> 웹툰보기 </Link></li>
+                            <li><a href="#"><FcInfo /> TV / 드라마 </a></li>
+                            <li><a href="#"><FcInfo /> 메모장 귀찮아서 대충만든 </a></li>
                         </ul>
                     )}
                 </motion.div>

@@ -31,7 +31,7 @@ function MainPage() {
                 insH-MyLab에 오신 것을 환영합니다!
             </h1>
             <p style={{ fontSize: '18px', color: '#333' }}>
-                뚝딱뚝딱 공사중입니다 . 쾅쾅
+                뚝딱뚝딱 공사중입니다 . 쾅쾅 from MainPage.js
             </p>
 
             <motion.div
@@ -65,7 +65,7 @@ function MainPage() {
                     variants={item}
                     whileHover="hover"
                     whileTap="tap"
-                    onClick={() => navigate('/api2')}
+                    onClick={() => navigate('/api/webtoon')}
                     style={{
                         background: '#f9f9f9',
                         padding: '40px',
