@@ -43,7 +43,7 @@ function SidebarLayout() {
                 >
                     {isOpen && (
                         <ul className="sidebar-menu">
-                            <li><Link to="#"> <FcInfo /> 웹툰보기 </Link></li>
+                            <li><Link to="/api/webtoon"> <FcInfo /> 웹툰보기 </Link></li>
                             <li><a href="#"><FcInfo /> TV / 드라마 </a></li>
                             <li><a href="#"><FcInfo /> 메모장 귀찮아서 대충만든 </a></li>
                         </ul>

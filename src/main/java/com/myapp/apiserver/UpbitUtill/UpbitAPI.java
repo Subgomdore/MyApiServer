@@ -60,7 +60,7 @@ public class UpbitAPI {
 
     }
 
-    @Description("시세 캔들조회 > 월(Month) 캔들")
+    @Description("시세 캔들조회 > 일(Day) 캔들")
     public List<Map<String, Object>> getCandleByDay(Map<String, String> paramsMap) throws IOException {
 
         String market = paramsMap.get("market"); // 마켓 코드

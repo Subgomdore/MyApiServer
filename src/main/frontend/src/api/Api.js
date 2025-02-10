@@ -12,23 +12,13 @@ export const getUpbitList = async () => {
 };
 
 
-// // Upbit 데이터를 가져와서 동기화하는 API
-// export const fetchAndSync = async () => {
-//     try {
-//         const res = await axios.get('/api/upbit/fetchAndSync');
-//         return res.data;
-//     } catch (error) {
-//         console.error('Failed to fetch and sync data:', error);
-//         throw error;
-//     }
-// };
-//
-// export const fetchPriceAndSync = async () => {
-//     try {
-//         const res = await axios.get('/api/upbit/pricesync');
-//         return res.data;
-//     } catch (error) {
-//         console.error('Failed to fetch and sync data:', error);
-//         throw error;
-//     }
-// };
+export const postUpbitFilterData = async (filterData) => {
+    try {
+        // filterData를 POST 요청의 body에 포함
+        const res = await axios.post('/api/upbit/filterdata', filterData);
+        return res.data; // 서버로부터 받은 데이터 반환
+    } catch (error) {
+        console.error('Failed to fetch FilterData:', error);
+        throw error; // 에러 발생 시 다시 던짐
+    }
+};

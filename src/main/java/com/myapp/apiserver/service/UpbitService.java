@@ -1,5 +1,6 @@
 package com.myapp.apiserver.service;
 
+import com.myapp.apiserver.model.dto.FilterRequestDTO;
 import com.myapp.apiserver.model.dto.UpbitAllDataResponseDTO;
 import com.myapp.apiserver.model.dto.UpbitCoinDTO;
 import com.myapp.apiserver.model.dto.UpbitCoinDayPriceDTO;
@@ -21,6 +22,9 @@ public interface UpbitService {
 
     @Description("전체코인리스트 캐싱작업")
     List<String> getAllCoinsWithCache();
+
+    @Description("필터적용된 코인검색")
+    List<FilterRequestDTO> findFilterCoinList(String priceRange, String volume);
 
     default UpbitCoinDTO entityToDTO(UpbitCoin entity) {
         return UpbitCoinDTO.builder()

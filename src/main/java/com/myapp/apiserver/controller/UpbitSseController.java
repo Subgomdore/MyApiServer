@@ -36,7 +36,6 @@ public class UpbitSseController {
     @GetMapping("/ping")
     public ResponseEntity<Void> ping() {
         // ping 요청을 받았을 때 아무 작업도 하지 않음
-        log.info("SSE connection .. ping!");
         return ResponseEntity.ok().build();
     }
 

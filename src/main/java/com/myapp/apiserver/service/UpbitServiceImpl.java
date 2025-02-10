@@ -2,6 +2,7 @@ package com.myapp.apiserver.service;
 
 import com.myapp.apiserver.UpbitUtill.UpbitAPI;
 import com.myapp.apiserver.UpbitUtill.UpbitUtils;
+import com.myapp.apiserver.model.dto.FilterRequestDTO;
 import com.myapp.apiserver.model.dto.UpbitAllDataResponseDTO;
 import com.myapp.apiserver.model.dto.UpbitCoinDTO;
 import com.myapp.apiserver.model.dto.UpbitCoinDayPriceDTO;
@@ -17,6 +18,8 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -77,7 +80,7 @@ public class UpbitServiceImpl implements UpbitService {
             // 실시간조회가 필요한 코인리스트가 있을경우
             for (int i = 0; i < coinsWithOutPriceList.size(); i += size) {
                 List<String> paramList = coinsWithOutPriceList.subList(i, Math.min(i + 20, coinsWithOutPriceList.size()));
-                
+
                 // 20개씩 실시간 데이터 요청
                 List<Map<String, Object>> currentPriceList = upbitAPI.getCurrentPriceByTicker(paramList);
 
@@ -101,7 +104,7 @@ public class UpbitServiceImpl implements UpbitService {
             upbitCoinPriceRepository.saveAll(updateCoinPriceList);
         }
 
-        for(Map<String, String> rowMap : currentPriceResult){
+        for (Map<String, String> rowMap : currentPriceResult) {
             upbitCoinDayPriceDTOList.add(modelMapper.map(rowMap, UpbitCoinDayPriceDTO.class));
         }
 
@@ -149,5 +152,85 @@ public class UpbitServiceImpl implements UpbitService {
     public List<String> getAllCoinsWithCache() {
         return upbitRepository.findAllCoinCodes();
     }
+
+
+    @Override
+    public List<FilterRequestDTO> findFilterCoinList(String priceRange, String volume) {
+        //upbitRepository.findDataWithinInterval(priceRange);
+
+        // resultObj 는 DB에서 이동평균 기준값에대한 쿼리데이터
+        List<Object[]> resultObj = upbitRepository.findDataWithinInterval(priceRange);
+
+        // 전체코인 리스트를 가져온다음
+        List<String> coinList = upbitRepository.findAllCoinCodes();
+
+        // 현재가격을 조회하고
+        List<Map<String, Object>> currentPriceList = upbitAPI.getCurrentPriceByTicker(coinList);
+
+        // 형태변환을 시켜준다.
+        List<Map<String, String>> convertCurrentPriceList = upbitUtils.convertPirceData(currentPriceList);
+
+        // 내부데이터와 실시간데이터를 합친다.
+        for (Map<String, String> row : convertCurrentPriceList) {
+            String dateStr = row.get("trade_date_kst");
+            String formattedDate = dateStr.substring(0, 4) + "-" + dateStr.substring(4, 6) + "-" + dateStr.substring(6, 8);
+            Object[] obj2 = {row.get("market"), formattedDate, row.get("trade_price")};
+
+            resultObj.add(obj2);
+        }
+
+        List<Map<String, String>> priceListData = new ArrayList<>();
+
+
+
+        //코인명으로 루프시작
+        for (String coin : coinList) {
+            List<BigDecimal> bigDecimalList = new ArrayList<>();
+            Map<String, String> priceMap = new HashMap<>();
+
+            for (Object[] obj : resultObj) {
+//                log.info(Arrays.toString(obj));
+
+                if (obj[0].equals(coin)) {
+                    if (coin.equalsIgnoreCase("BTC-DNT")) {
+
+                        bigDecimalList.add(new BigDecimal(obj[2].toString()));
+//                        log.info(bigDecimalList);
+
+                        BigDecimal totalPrice = bigDecimalList.stream().reduce(BigDecimal.ZERO, BigDecimal::add);
+                        log.info(coin + " : " + totalPrice);
+
+                        int intpriceRange = Integer.valueOf(priceRange);
+
+                        // totalPrice.divide(BigDecimal.valueOf(intpriceRange + 1), 10, RoundingMode.HALF_UP);
+
+                        String castTotalPrice = String.valueOf(totalPrice.divide(BigDecimal.valueOf(intpriceRange + 1), 10, RoundingMode.HALF_UP));
+
+//                        log.info(totalPrice.divide(BigDecimal.valueOf(priceRange + 1), 10, RoundingMode.HALF_UP));
+
+                        priceMap.put(coin,castTotalPrice);
+
+
+                    }
+
+                }
+            }
+
+
+
+            if(!priceMap.isEmpty()){
+                priceListData.add(priceMap);
+            }
+
+        }
+
+        log.info(priceListData);
+
+
+        return null;
+    }
+//
+//    @Description("필터적용된 코인검색")
+//    List<FilterRequestDTO> findFilterCoinList();
 
 }

@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {getUpbitList} from '../../api/Api';
 import '../../css/pages/upbit/UpbitMainPage.css';
 import '../../css/pages/upbit/PriceAnimation.css';
-import SearchAndButtons from "../../components/SearchAndButtons";
+import SearchAndButtons from "./SearchAndButtons";
 import MarketList from "../../components/MarketList";
 
 function UpbitMainPage() {

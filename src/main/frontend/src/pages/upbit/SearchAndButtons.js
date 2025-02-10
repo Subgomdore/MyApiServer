@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import '../css/components/SearchAndButtons.css';
+import '../../css/components/SearchAndButtons.css';
 
 function SearchAndButtons({ searchTerm, handleSearch, selectedMarket, handleMarketFilter, onFilterApply, fetchData }) {
     const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -47,9 +47,8 @@ function SearchAndButtons({ searchTerm, handleSearch, selectedMarket, handleMark
                 <button className="custom-button" onClick={openPopup}> 검색필터 추가</button>
 
                 {/* 기본 데이터 가져오기 버튼 */}
-                <button className="custom-button" onClick={fetchData}> 필터 초기화 </button>
+                <button className="custom-button" onClick={fetchData}> 필터 초기화(예정) </button>
 
-                <button className="custom-button" onClick={() => alert('Button 3 Clicked!')}>Button 3</button>
             </div>
 
             {/* 검색창 및 필터 */}
