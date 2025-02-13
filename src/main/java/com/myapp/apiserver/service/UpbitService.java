@@ -10,6 +10,7 @@ import jakarta.transaction.Transactional;
 import jdk.jfr.Description;
 
 import java.util.List;
+import java.util.Map;
 
 @Transactional
 public interface UpbitService {
@@ -24,7 +25,7 @@ public interface UpbitService {
     List<String> getAllCoinsWithCache();
 
     @Description("필터적용된 코인검색")
-    List<FilterRequestDTO> findFilterCoinList(String priceRange, String volume);
+    List<Map<String, String>> findFilterCoinList(int priceRange, String volume);
 
     default UpbitCoinDTO entityToDTO(UpbitCoin entity) {
         return UpbitCoinDTO.builder()

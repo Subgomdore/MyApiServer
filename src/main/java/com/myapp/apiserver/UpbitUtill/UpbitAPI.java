@@ -29,7 +29,7 @@ public class UpbitAPI {
 
     @Description("시세 종목 조회 > 종목 코드조회")
     public List<Map<String, Object>> getMarketCode() {
-        String url = "https://api.upbit.com/v1/market/all?isDetails=false";
+        String url = "https://api.upbit.com/v1/market/all?isDetails=true";
         String jsonResponse;
         List<Map<String, Object>> coinListMap = null;
 
@@ -62,13 +62,11 @@ public class UpbitAPI {
 
     @Description("시세 캔들조회 > 일(Day) 캔들")
     public List<Map<String, Object>> getCandleByDay(Map<String, String> paramsMap) throws IOException {
-
         String market = paramsMap.get("market"); // 마켓 코드
         String to = MapUtils.getString(paramsMap, "to", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + "T09:00:00");
         String count = MapUtils.getString(paramsMap, "count", "200");  // count가 없으면 기본값 "200"
         String convertingPriceUnit = MapUtils.getString(paramsMap, "convertingPriceUnit", "KRW"); // 종가 환산 화폐 단위, 생략 가능
         String url = null;
-
 
         int min = 0;
         int sec = 0;
@@ -109,13 +107,11 @@ public class UpbitAPI {
 
                         // 다시 조회할 데이터를 갱신하고
                         String changeTo = (String) coinPriceList.get(coinPriceList.size() - 1).get("candle_date_time_kst") + ":00:00";
-                        if (to.equals(changeTo)) {
+                        if (to.equals(changeTo) || !count.equals(200)) {
                             // 더이상 마지막 날짜의 데이터가, 똑같을경우 마지막데이터까지 가져왔으니 flag 변경
                             reqFlag = false;
                         } else {
                             // 날짜가 다를경우 데이터 갱신후 while문 동작
-                            log.info(to);
-                            log.info(changeTo);
                             to = changeTo;
                         }
                     }
@@ -124,9 +120,9 @@ public class UpbitAPI {
                 if (min < 1 || sec < 1) {
                     Thread.sleep(1000);
                 }
-
-                log.warn("MIN> " + min + " / " + "SEC> " + sec);
-                log.warn("[ " + paramsMap.get("ALL_COUNT") + " / " + paramsMap.get("PROGRESS") + " ] >> Market : " + market);
+                log.warn(reqFlag);
+//                log.warn("MIN> " + min + " / " + "SEC> " + sec);
+//                log.warn("[ " + paramsMap.get("ALL_COUNT") + " / " + paramsMap.get("PROGRESS") + " ] >> Market : " + market);
             }
         } catch (Exception e) {
             log.error(e);

@@ -94,7 +94,6 @@ public class ExternalUpbitServiceimpl implements ExternalUpbitService {
                 List<Map<String, String>> convertList = new ArrayList<>();
                 convertList = upbitUtils.convertPirceData(resultList);
 
-
                 // DTO 리스트 생성
                 List<UpbitCoinDayPriceDTO> priceDTOList = new ArrayList<>();
 
@@ -122,7 +121,7 @@ public class ExternalUpbitServiceimpl implements ExternalUpbitService {
 
                 // Entity로 변환하고 저장
                 List<UpbitCoinDayPrice> upbitCoinDayPrices = priceDTOList.stream()
-                        .map(this::DTOtoEntity)  // DTO를 Entity로 변환
+                        .map(this::DTOtoEntity)
                         .collect(Collectors.toList());
 
                 upbitCoinPriceRepository.saveAll(upbitCoinDayPrices);
@@ -133,3 +132,4 @@ public class ExternalUpbitServiceimpl implements ExternalUpbitService {
         }
     }
 }
+

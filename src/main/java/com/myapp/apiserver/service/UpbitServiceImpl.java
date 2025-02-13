@@ -19,6 +19,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.*;
@@ -155,11 +156,9 @@ public class UpbitServiceImpl implements UpbitService {
 
 
     @Override
-    public List<FilterRequestDTO> findFilterCoinList(String priceRange, String volume) {
-        //upbitRepository.findDataWithinInterval(priceRange);
-
+    public List<Map<String, String>> findFilterCoinList(int priceRange, String volume) {
         // resultObj 는 DB에서 이동평균 기준값에대한 쿼리데이터
-        List<Object[]> resultObj = upbitRepository.findDataWithinInterval(priceRange);
+        List<Object[]> resultObj = upbitRepository.findDataWithinInterval(String.valueOf(priceRange - 1));
 
         // 전체코인 리스트를 가져온다음
         List<String> coinList = upbitRepository.findAllCoinCodes();
@@ -181,56 +180,83 @@ public class UpbitServiceImpl implements UpbitService {
 
         List<Map<String, String>> priceListData = new ArrayList<>();
 
+        List<Map<String, String>> testList = new ArrayList<>();
 
 
         //코인명으로 루프시작
         for (String coin : coinList) {
             List<BigDecimal> bigDecimalList = new ArrayList<>();
             Map<String, String> priceMap = new HashMap<>();
+            Map<String, String> testMap = new HashMap<>();
 
             for (Object[] obj : resultObj) {
-//                log.info(Arrays.toString(obj));
-
-                if (obj[0].equals(coin)) {
-                    if (coin.equalsIgnoreCase("BTC-DNT")) {
-
-                        bigDecimalList.add(new BigDecimal(obj[2].toString()));
-//                        log.info(bigDecimalList);
-
-                        BigDecimal totalPrice = bigDecimalList.stream().reduce(BigDecimal.ZERO, BigDecimal::add);
-                        log.info(coin + " : " + totalPrice);
-
-                        int intpriceRange = Integer.valueOf(priceRange);
-
-                        // totalPrice.divide(BigDecimal.valueOf(intpriceRange + 1), 10, RoundingMode.HALF_UP);
-
-                        String castTotalPrice = String.valueOf(totalPrice.divide(BigDecimal.valueOf(intpriceRange + 1), 10, RoundingMode.HALF_UP));
-
-//                        log.info(totalPrice.divide(BigDecimal.valueOf(priceRange + 1), 10, RoundingMode.HALF_UP));
-
-                        priceMap.put(coin,castTotalPrice);
-
-
-                    }
-
+                if(coin.equals(obj[0])){
+                    String value = String.valueOf(obj[2]);
+                    BigDecimal replaceValue = new BigDecimal(value).setScale(8, RoundingMode.HALF_UP);
+                    bigDecimalList.add(replaceValue); // coin명으로 데이터검색 후 bigDecimalList에 담고
                 }
             }
 
+            MathContext mc = new MathContext(30, RoundingMode.HALF_UP);
+            int maxScale = bigDecimalList.stream()
+                    .map(BigDecimal::stripTrailingZeros)
+                    .map(BigDecimal::scale)
+                    .max(Integer::compareTo)
+                    .orElse(8);
 
+            if(bigDecimalList.size() == priceRange){ // priceRange는 오늘날짜를 제외하기때문에 +1해서 검색기간값을 맞춘다.
+                log.info("bigDecimalList.size()>>>" + bigDecimalList.size() + " // " + "priceRange>>>" + priceRange  );
 
-            if(!priceMap.isEmpty()){
+                BigDecimal totalPrice = bigDecimalList.stream()
+                        .reduce(BigDecimal.ZERO, (a, b) -> a.add(b, mc))
+                        .setScale(maxScale, RoundingMode.HALF_UP);
+
+                BigDecimal finalPrice = totalPrice.divide(BigDecimal.valueOf(priceRange), maxScale, RoundingMode.HALF_UP);
+
+                priceMap.put(coin, finalPrice.toPlainString());
+                testMap.put(coin, String.valueOf(bigDecimalList.size()));
+            }else {
+                testMap.put(coin, String.valueOf(bigDecimalList.size()));
+            }
+
+            testList.add(testMap);
+            if (!priceMap.isEmpty()) {
                 priceListData.add(priceMap);
             }
 
+
+            log.info("listSIze >>" + bigDecimalList.size());
         }
+        log.info (testList);
 
-        log.info(priceListData);
+        // 최종 실시간데이터와 평균값을 비교한다
+        List<Map<String, String>> resultPriceData = new ArrayList<>();
 
+        for(Map<String, String> avgPrice : priceListData){
+            for(Map.Entry<String, String> entry : avgPrice.entrySet()){
 
-        return null;
+                String coinName = entry.getKey();
+                for(Map<String, String> currentPrice : convertCurrentPriceList){
+                    if(coinName.equals(currentPrice.get("market"))){
+                        BigDecimal currentValue = new BigDecimal(currentPrice.get("trade_price"));
+                        BigDecimal avgValue = new BigDecimal(entry.getValue());
+
+                        if(avgValue.compareTo(currentValue) < 0){
+                            Map<String, String> resultMap = new HashMap<>();
+                            resultMap.put("market", entry.getKey());
+                            resultMap.put("currentPrice", currentPrice.get("trade_price"));
+
+                            BigDecimal percentageChange = currentValue.subtract(avgValue) // 비교 가격 - 현재 가격
+                                    .divide(avgValue, 10, RoundingMode.HALF_UP) // 현재 가격으로 나누기 (소수점 10자리 유지)
+                                    .multiply(BigDecimal.valueOf(100));
+
+                            resultMap.put("percentageChange", percentageChange + "%");
+                            resultPriceData.add(resultMap);
+                        }
+                    }
+                }
+            }
+        }
+        return resultPriceData;
     }
-//
-//    @Description("필터적용된 코인검색")
-//    List<FilterRequestDTO> findFilterCoinList();
-
 }

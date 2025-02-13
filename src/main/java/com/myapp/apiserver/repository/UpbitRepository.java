@@ -23,8 +23,7 @@ public interface UpbitRepository extends JpaRepository<UpbitCoin, Long> {
     @Query(value = """
         SELECT udp.market, udp.candle_date_time_kst, udp.trade_price
         FROM upbit_day_price udp
-        WHERE market LIKE 'KRW-%' 
-        AND udp.candle_date_time_kst BETWEEN (CURRENT_DATE - INTERVAL :intervalValue DAY)
+        WHERE udp.candle_date_time_kst BETWEEN (CURRENT_DATE - INTERVAL :intervalValue DAY)
         AND (CURRENT_DATE - INTERVAL 1 DAY)
         ORDER BY udp.market ASC, udp.candle_date_time_kst DESC
         """, nativeQuery = true)

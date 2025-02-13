@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
@@ -20,7 +21,7 @@ public class CustomServletConig implements WebMvcConfigurer {
         registry.addMapping("/**")
                 .maxAge(500)
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS")
-                .allowedOrigins("http://localhost:3000", "http://localhost:8080", "http://59.16.228.93:18080")
+                .allowedOrigins("http://localhost:3000", "http://localhost:8080", "http://59.16.228.93:18080","http://joy2islab.ddns.net/")
                 .allowCredentials(true);
 
     }
@@ -29,5 +30,11 @@ public class CustomServletConig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(clientIpInterceptor)
                 .addPathPatterns("/**");  // 모든 요청에 대해 인터셉터 실행
+    }
+
+    @Override
+    public void addViewControllers(ViewControllerRegistry registry) {
+        // React 라우트 요청이 들어오면 index.html을 반환하도록 설정
+        registry.addViewController("/filter-popup").setViewName("forward:/index.html");
     }
 }

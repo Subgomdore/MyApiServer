@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @Log4j2
@@ -32,19 +34,19 @@ public class UpbitController {
     @GetMapping("/api/upbit/priceList")
     @Description("업비트 코인리스트")
     public List<UpbitAllDataResponseDTO> getAllCoinAndPrice() {
-        log.info("/priceList");
+        log.info("/api/upbit/priceList");
         return upbitService.getAllCoinAndPrice();
     }
 
-    @PostMapping("/api/upbit/filterdata")
+    @PostMapping("/api/upbit/filterData")
     @Description("업비트 필터 데이터 요청")
-    public void filterCoinData(@RequestBody FilterRequestDTO filterRequest) {
-        log.info("Received filter request: {}", filterRequest);
-        String priceRange = filterRequest.getPriceRange();
+    public List<Map<String, String>> filterCoinData(@RequestBody FilterRequestDTO filterRequest) {
+
+        log.info("/api/upbit/filterData");
+        int priceRange = Integer.parseInt(filterRequest.getPriceRange());
         String volume = filterRequest.getVolume();
 
-        upbitService.findFilterCoinList(priceRange, volume);
-
+        return upbitService.findFilterCoinList(priceRange, volume);
 
         // 필터링 로직 처리 (서비스 호출)
         //List<UpbitAllDataResponseDTO> filteredData = upbitService.filterCoinData(filterRequest);
