@@ -2,7 +2,6 @@
 .filter-popup-container {
     display: flex;
     height: 100vh;
-    font-family: Arial, sans-serif;
 }
 
 /* 왼쪽 트리 구조 */
@@ -29,7 +28,7 @@
 
 /* 아코디언 헤더 스타일 */
 .accordion-header {
-    font-weight: bold;
+    font-weight: normal;
     cursor: pointer;
     padding: 5px;
     background-color: #e0e0e0;
@@ -76,6 +75,7 @@
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
+    font-size: smaller;
 }
 
 .filter-popup-result-table th, .filter-popup-result-table td {

@@ -31,9 +31,9 @@ function MainPage() {
                 insH-MyLab에 오신 것을 환영합니다!
             </h1>
             <p style={{ fontSize: '18px', color: '#333' }}>
-                뚝딱뚝딱 공사중입니다 . 쾅쾅 from MainPage.js
+                뚝딱뚝딱 공사중입니다 . 쾅쾅
             </p>
-
+            <a href="https://github.com/Subgomdore/MyApiServer" target="_blank"> 사이트 GitHub</a>
             <motion.div
                 className="api-boxes"
                 variants={container}

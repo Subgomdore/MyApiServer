@@ -13,7 +13,6 @@ const FilterPopup = () => {
         try {
             // 서버로 필터 데이터 전송 및 응답 저장
             const response = await postUpbitFilterData(filterData);
-            console.log('Filtered data from server:', response);
             setResults(response); // 결과 상태 업데이트
         } catch (error) {
             console.error('Error applying filters:', error);
@@ -46,9 +45,10 @@ const FilterPopup = () => {
         <div className="filter-popup-container">
             <div className="filter-popup-info">
                 <h4>필터 설정</h4>
+                <h4>ex : 112 를 입력하면 112일평균값 이상의 데이터 조회</h4>
                 {/* 가격 범위 설정 */}
                 <div className="filter-group">
-                    <label>이동평균 조건값:</label>
+                    <label>이동평균 조건값: </label>
                     <input
                         type="range"
                         min="0"
@@ -89,7 +89,6 @@ const FilterPopup = () => {
 
             {/* 결과 테이블 */}
             <div className="filter-popup-result-table">
-                <h>예시 샘플 화면</h>
                 <table>
                     <thead>
                     <tr>
@@ -102,9 +101,9 @@ const FilterPopup = () => {
                     {results.length > 0 ? (
                         results.map((result, index) => (
                             <tr key={index}>
-                                <td>{result.name}</td>
-                                <td>{result.price}</td>
-                                <td>{result.volume}</td>
+                                <td>{result.market}</td>
+                                <td>{result.currentPrice}</td>
+                                <td>{result.percentageChange}</td>
                             </tr>
                         ))
                     ) : (

@@ -6,16 +6,20 @@ function SearchAndButtons({ searchTerm, handleSearch, selectedMarket, handleMark
 
     // 팝업 열기 함수
     const openPopup = () => {
+        const popupUrl = `${window.location.origin}/filter-popup`;
+
+        console.log("Opening popup URL: ", popupUrl); // 🔍 URL 디버깅용 로그 추가
+
         const popup = window.open(
-            `http://localhost:3000/filter-popup`, // 3000번 포트를 명시적으로 지정
-            "FilterPopup", // 팝업 이름
-            "width=800,height=600,left=300,top=200" // 팝업 창 크기 및 위치 설정
+            popupUrl,
+            "FilterPopup",
+            "width=800,height=600,left=300,top=200"
         );
 
         if (popup) {
-            setIsPopupOpen(true); // 팝업이 성공적으로 열렸는지 확인
+            setIsPopupOpen(true);
         } else {
-            alert("팝업 차단이 활성화되어 있습니다. 팝업 차단을 해제해주세요."); // 팝업 차단 알림
+            alert("팝업 차단이 활성화되어 있습니다. 팝업 차단을 해제해주세요.");
         }
     };
 
