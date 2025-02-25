@@ -26,8 +26,6 @@ function AboutPage() {
                 {/* 이름 및 간단한 소개 */}
                 <motion.div variants={item} className="about-header">
                     <h1>황인성</h1>
-                    <p>아무거또몰라요 개발자 | GPT로 날로만드는 개발자입니다. </p>
-                    <p>개발중인 프로젝트이지만 너무 휑해서 적어놨어요. </p>
                 </motion.div>
 
                 {/* 연락처 정보 */}
@@ -49,11 +47,11 @@ function AboutPage() {
                         <p>2023년 1월 - 2024년 9월 (1년8개월) </p>
                         <ul>
                             <li> DX사업부 전자인장팀 SaaS 운영서비스 담당 </li>
-                            <li> On-Premise 지원 및 솔루션 공통기능 개발 </li>
+                            <li> On-Premise 지원 및 솔루션 공통기능 개발  </li>
                             <li> On-Premise 운영지원 및 트러블슈팅 </li>
                             <li> 전자인장팀 신규입사자 프레임워크 교육 및 지원</li>
                             <li> 참여프로젝트 : 동아제약 / 포스코플로우 / 이루다 / 이토추마루베니 / SBW생명과학 / 한국정보화진흥원(NIA)</li>
-                            <li>  BASS / 코오롱LSI / 세포아소프트 / 현대회계법인 / 세종테크노파크 / COSMAX </li>
+                            <li> BASS / 코오롱LSI / 세포아소프트 / 현대회계법인 / 세종테크노파크 / COSMAX </li>
 
 
                         </ul>

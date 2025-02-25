@@ -11,7 +11,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @Log4j2
-public class CustomServletConig implements WebMvcConfigurer {
+public class WebConfig implements WebMvcConfigurer {
 
     @Autowired
     private ClientIpInterceptor clientIpInterceptor;

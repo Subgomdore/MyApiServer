@@ -180,7 +180,6 @@ public class UpbitServiceImpl implements UpbitService {
 
         List<Map<String, String>> priceListData = new ArrayList<>();
 
-        List<Map<String, String>> testList = new ArrayList<>();
 
 
         //코인명으로 루프시작
@@ -205,7 +204,6 @@ public class UpbitServiceImpl implements UpbitService {
                     .orElse(8);
 
             if(bigDecimalList.size() == priceRange){ // priceRange는 오늘날짜를 제외하기때문에 +1해서 검색기간값을 맞춘다.
-                log.info("bigDecimalList.size()>>>" + bigDecimalList.size() + " // " + "priceRange>>>" + priceRange  );
 
                 BigDecimal totalPrice = bigDecimalList.stream()
                         .reduce(BigDecimal.ZERO, (a, b) -> a.add(b, mc))
@@ -219,15 +217,10 @@ public class UpbitServiceImpl implements UpbitService {
                 testMap.put(coin, String.valueOf(bigDecimalList.size()));
             }
 
-            testList.add(testMap);
             if (!priceMap.isEmpty()) {
                 priceListData.add(priceMap);
             }
-
-
-            log.info("listSIze >>" + bigDecimalList.size());
         }
-        log.info (testList);
 
         // 최종 실시간데이터와 평균값을 비교한다
         List<Map<String, String>> resultPriceData = new ArrayList<>();

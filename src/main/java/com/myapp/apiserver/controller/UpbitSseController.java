@@ -28,6 +28,7 @@ public class UpbitSseController {
             emitter.send(SseEmitter.event().name("price").data(newPriceData));
         } catch (IOException e) {
             log.error("Error sending SSE data", e);
+            e.printStackTrace();
             emitter.completeWithError(e);
             webSocketClient.removeSseListener(data -> accept(data, emitter));
         }
@@ -41,12 +42,11 @@ public class UpbitSseController {
 
     @GetMapping("/price")
     public SseEmitter streamPrices() {
-        SseEmitter emitter = new SseEmitter(0L); // 무제한 타임아웃
+        SseEmitter emitter = new SseEmitter(60_000L); // 무제한 타임아웃
         ExecutorService executor = Executors.newSingleThreadExecutor();
 
         // SSE 리스너 등록
         Consumer<String> priceListener = newPriceData -> accept(newPriceData, emitter);
-
         webSocketClient.addSseListener(priceListener);
 
         // SSE 연결 종료 시 처리
@@ -55,6 +55,13 @@ public class UpbitSseController {
             webSocketClient.removeSseListener(priceListener);  // 리스너 제거
             executor.shutdown();
         });
+
+        try {
+            // 최초 연결 시 빈 이벤트 전송 → 클라이언트가 연결을 유지할 수 있도록 함
+            emitter.send(SseEmitter.event().name("connected").data("CONNECTED"));
+        } catch (IOException e) {
+            emitter.complete();
+        }
 
         emitter.onTimeout(() -> {
             log.info("SSE connection timed out.");

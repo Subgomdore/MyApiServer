@@ -1,14 +1,15 @@
 /* 헤더 */
 .header {
-    margin-left: 40px;
+    margin-left: 20px;
     background-color: #323a45;
     color: #ffffff;
     padding: 10px 20px;
     display: flex;
-    justify-content: flex-start;
+    justify-content: space-between; /* 좌우 정렬 */
     align-items: center;
     height: 60px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: calc(100% - 40px); /* 가로폭 조정 */
 }
 
 /* 네비게이션 스타일 */
@@ -28,4 +29,19 @@
 
 .header nav a:hover {
     color: #a3b9cc;
+}
+
+/* 방문자 수 & 현재 시간 표시 영역 */
+.header .info-container {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* 아이템 간격 */
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.current-time, .visitor-count {
+    padding: 5px 10px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
 }
