@@ -1,9 +1,24 @@
 package com.myapp.apiserver.model.dto;
 
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
+import lombok.Setter;
+import java.util.List;
 
-@Data
+@Getter
+@Setter
 public class FilterRequestDTO {
-    private String priceRange; // 가격 범위 (예: 500 이하)
-    private String volume;     // 거래량 (예: 100 이상)
+    @JsonProperty("conditionType")  // JSON 필드명과 DTO 필드를 정확하게 매핑
+    private String conditionType;
+
+    @JsonProperty("filters")
+    private List<FilterConditionDTO> filters;
+
+    @Override
+    public String toString() {
+        return "FilterRequestDTO{" +
+                "conditionType='" + conditionType + '\'' +
+                ", filters=" + filters +
+                '}';
+    }
 }

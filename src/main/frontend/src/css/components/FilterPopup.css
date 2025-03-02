@@ -1,93 +1,221 @@
-/* 전체 레이아웃 */
+/* ✅ 전체 레이아웃 */
 .filter-popup-container {
     display: flex;
     height: 100vh;
+    background-color: #f8f8f8;
+    overflow: hidden;
 }
 
-/* 왼쪽 트리 구조 */
+/* ✅ 좌측 필터 설정 */
 .filter-popup-sidebar {
-    width: 25%;
-    background-color: #f8f8f8;
+    width: 300px; /* 🌟 왼쪽 사이드바를 고정 크기로 설정 */
+    min-width: 335px; /* 최소 크기를 설정해 더 이상 줄어들지 않도록 */
+    background-color: #ffffff;
     padding: 20px;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    height: 100vh;
+    overflow-y: auto;
+    border-right: 2px solid #ddd;
 }
 
-.filter-popup-tree {
-    list-style-type: none;
-    padding-left: 10px;
+/* ✅ 필터 제목 스타일 */
+.filter-popup-sidebar h4 {
+    margin-bottom: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
 }
 
-.filter-popup-tree li {
-    padding: 5px 0;
-}
-
-.filter-popup-tree ul {
-    padding-left: 15px;
-    list-style-type: none;
-}
-
-/* 아코디언 헤더 스타일 */
-.accordion-header {
-    font-weight: normal;
-    cursor: pointer;
-    padding: 5px;
-    background-color: #e0e0e0;
-    border: 1px solid #ccc;
-    margin-bottom: 5px;
-    display: inline-block;
-}
-
-/* 오른쪽 컨텐츠 영역 */
-.filter-popup-content {
-    width: 75%;
-    padding: 20px;
+/* ✅ AND / OR 조건 체크박스 */
+.condition-checkbox {
     display: flex;
-    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+    margin-bottom: 15px;
 }
 
-/* 상단 필터 정보 */
-.filter-popup-info {
-    background-color: #f1f1f1;
-    padding: 15px;
-    margin-bottom: 20px;
-    border-radius: 4px;
+.condition-checkbox label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #444;
+}
+
+.market-checkbox-group {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.market-checkbox-group label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #444;
+}
+
+input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #ff9f43;
+}
+
+/* ✅ 필터 그룹 (각 필터 조건 박스) */
+.filter-group {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 10px 0;
+    background: #f9f9f9;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    transition: all 0.3s ease-in-out;
+}
+
+.filter-group:hover {
+    background: #f0f0f0;
+}
+
+/* ✅ SelectBox 스타일 */
+select {
+    background: #ffffff;
+    color: #333;
+    border: 1px solid #ccc;
+    padding: 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+select:hover {
+    background: #f0f0f0;
+}
+
+select:focus {
+    outline: none;
+    box-shadow: 0px 0px 6px rgba(255, 159, 67, 0.8);
+}
+
+/* ✅ Input 필드 스타일 */
+input[type="number"] {
+    background: #ffffff;
+    color: #333;
+    border: 1px solid #ccc;
+    padding: 8px;
+    border-radius: 6px;
+    width: 80px;
+    text-align: center;
+    transition: all 0.3s ease-in-out;
+}
+
+input[type="number"]:focus {
+    outline: none;
+    box-shadow: 0px 0px 6px rgba(255, 159, 67, 0.8);
+}
+
+/* ✅ 추가 / 삭제 버튼 스타일 */
+.add-button, .remove-button {
+    background: #ff9f43;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+.add-button:hover, .remove-button:hover {
+    background: #ff7843;
+}
+
+.remove-button {
+    background: #ff5c5c;
+    margin-left: 10px;
+}
+
+.remove-button:hover {
+    background: #ff3838;
+}
+
+/* ✅ 필터 적용 및 초기화 버튼 */
+.button-group {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
 }
 
 .apply-button, .reset-button {
-    padding: 10px 20px;
+    background: #4caf50;
     color: white;
     border: none;
-    border-radius: 4px;
+    padding: 10px 15px;
+    border-radius: 6px;
     cursor: pointer;
-    margin-top: 10px;
+    transition: all 0.3s ease-in-out;
+    font-size: 14px;
+    font-weight: bold;
 }
 
-.apply-button {
-    background-color: #4CAF50;
+.apply-button:hover {
+    background: #45a049;
 }
 
 .reset-button {
-    background-color: #f44336;
+    background: #f44336;
 }
 
-/* 하단 결과 테이블 */
-.filter-popup-result-table table {
+.reset-button:hover {
+    background: #e53935;
+}
+
+/* ✅ 오른쪽 결과 테이블 컨테이너 (스크롤 적용) */
+.filter-popup-content {
+    flex-grow: 1; /* 🌟 남은 공간을 전부 차지하도록 설정 */
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    padding: 20px;
+    background: #fff;
+    overflow: hidden;
+}
+
+/* ✅ 테이블이 들어갈 컨테이너 */
+.filter-popup-result-container {
+    flex-grow: 1;
+    overflow-y: auto;
+    max-height: calc(100vh - 80px);
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 10px;
+    background: #ffffff;
+}
+
+/* ✅ 결과 테이블 스타일 */
+.filter-popup-result-table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 20px;
-    font-size: smaller;
 }
 
 .filter-popup-result-table th, .filter-popup-result-table td {
-    border: 1px solid #ddd;
-    padding: 10px;
+    padding: 12px;
     text-align: center;
+    border-bottom: 1px solid #ddd;
+    font-size: 14px;
 }
 
 .filter-popup-result-table th {
-    background-color: #f4f4f4;
+    background: #f4f4f4;
+    font-weight: bold;
 }
 
-.filter-popup-result-table tbody tr:hover {
-    background-color: #f1f1f1;
+tbody tr:hover {
+    background: #f9f9f9;
+    transition: all 0.2s ease-in-out;
 }
+

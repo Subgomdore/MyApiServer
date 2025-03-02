@@ -25,7 +25,7 @@ public interface UpbitService {
     List<String> getAllCoinsWithCache();
 
     @Description("필터적용된 코인검색")
-    List<Map<String, String>> findFilterCoinList(int priceRange, String volume);
+    List<Map<String, String>> findFilterCoinList(String conditionType,FilterRequestDTO filterRequest);
 
     default UpbitCoinDTO entityToDTO(UpbitCoin entity) {
         return UpbitCoinDTO.builder()

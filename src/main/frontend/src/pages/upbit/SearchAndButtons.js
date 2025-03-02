@@ -13,7 +13,7 @@ function SearchAndButtons({ searchTerm, handleSearch, selectedMarket, handleMark
         const popup = window.open(
             popupUrl,
             "FilterPopup",
-            "width=800,height=600,left=300,top=200"
+            "width=802,height=720,left=300,top=200"
         );
 
         if (popup) {

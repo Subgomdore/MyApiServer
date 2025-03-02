@@ -12,14 +12,13 @@ export const getUpbitList = async () => {
 };
 
 
-export const postUpbitFilterData = async (filterData) => {
+export const postUpbitFilterData = async (requestData) => {
     try {
-        // filterData를 POST 요청의 body에 포함
-        const res = await axios.post('/api/upbit/filterData', filterData);
+        const res = await axios.post('/api/upbit/filterData', requestData);
         return res.data; // 서버로부터 받은 데이터 반환
     } catch (error) {
         console.error('Failed to fetch FilterData:', error);
-        throw error; // 에러 발생 시 다시 던짐
+        throw error;
     }
 };
 

@@ -35,11 +35,11 @@ public class BackProcessScheduler {
         upbitService.getAllCoinsWithCache();
     }
 
-    @Scheduled(cron = "*/10 * * * * ?")
-    @Description("10초마다 실행")
-    public void autoTradingBotBackProcess() {
-            upbitAutoTradingBot.autoTradingBot();
-    }
+//    @Scheduled(cron = "*/60 * * * * ?")
+//    @Description("10초마다 실행")
+//    public void autoTradingBotBackProcess() {
+//            upbitAutoTradingBot.startMonitoring();
+//    }
 
 }
 

@@ -156,7 +156,29 @@ public class UpbitServiceImpl implements UpbitService {
 
 
     @Override
-    public List<Map<String, String>> findFilterCoinList(int priceRange, String volume) {
+    public List<Map<String, String>> findFilterCoinList(String conditionType, FilterRequestDTO filterRequest) {
+
+        // DTO → List<Map<String, String>> 변환
+        List<Map<String, String>> filterList = filterRequest.getFilters().stream()
+                .map(filter -> {
+                    Map<String, String> map = new HashMap<>();
+                    map.put("id", String.valueOf(filter.getId()));
+                    map.put("type", filter.getType());
+                    map.put("value", filter.getValue().toString());
+                    return map;
+                })
+                .collect(Collectors.toList());
+
+        for(Map<String, String> filterMap : filterList){
+
+            String findType = filterMap.get("type");
+            int findValue = Integer.valueOf(filterMap.get("value"));
+
+        }
+
+        // 임시 변수
+        int priceRange = 15;
+
         // resultObj 는 DB에서 이동평균 기준값에대한 쿼리데이터
         List<Object[]> resultObj = upbitRepository.findDataWithinInterval(String.valueOf(priceRange - 1));
 
@@ -180,13 +202,10 @@ public class UpbitServiceImpl implements UpbitService {
 
         List<Map<String, String>> priceListData = new ArrayList<>();
 
-
-
         //코인명으로 루프시작
         for (String coin : coinList) {
             List<BigDecimal> bigDecimalList = new ArrayList<>();
             Map<String, String> priceMap = new HashMap<>();
-            Map<String, String> testMap = new HashMap<>();
 
             for (Object[] obj : resultObj) {
                 if(coin.equals(obj[0])){
@@ -212,9 +231,97 @@ public class UpbitServiceImpl implements UpbitService {
                 BigDecimal finalPrice = totalPrice.divide(BigDecimal.valueOf(priceRange), maxScale, RoundingMode.HALF_UP);
 
                 priceMap.put(coin, finalPrice.toPlainString());
-                testMap.put(coin, String.valueOf(bigDecimalList.size()));
-            }else {
-                testMap.put(coin, String.valueOf(bigDecimalList.size()));
+            }
+
+            if (!priceMap.isEmpty()) {
+                priceListData.add(priceMap);
+            }
+        }
+
+        // 최종 실시간데이터와 평균값을 비교한다
+        List<Map<String, String>> resultPriceData = new ArrayList<>();
+
+        for(Map<String, String> avgPrice : priceListData){
+            for(Map.Entry<String, String> entry : avgPrice.entrySet()){
+
+                String coinName = entry.getKey();
+                for(Map<String, String> currentPrice : convertCurrentPriceList){
+                    if(coinName.equals(currentPrice.get("market"))){
+                        BigDecimal currentValue = new BigDecimal(currentPrice.get("trade_price"));
+                        BigDecimal avgValue = new BigDecimal(entry.getValue());
+
+                        if(avgValue.compareTo(currentValue) < 0){
+                            Map<String, String> resultMap = new HashMap<>();
+                            resultMap.put("market", entry.getKey());
+                            resultMap.put("currentPrice", currentPrice.get("trade_price"));
+
+                            BigDecimal percentageChange = currentValue.subtract(avgValue) // 비교 가격 - 현재 가격
+                                    .divide(avgValue, 10, RoundingMode.HALF_UP) // 현재 가격으로 나누기 (소수점 10자리 유지)
+                                    .multiply(BigDecimal.valueOf(100));
+
+                            resultMap.put("percentageChange", percentageChange + "%");
+                            resultPriceData.add(resultMap);
+                        }
+                    }
+                }
+            }
+        }
+        return resultPriceData;
+    }
+
+    public List<Map<String, String>> findFilterCoinList_two(int priceRange, String volume) {
+        // resultObj 는 DB에서 이동평균 기준값에대한 쿼리데이터
+        List<Object[]> resultObj = upbitRepository.findDataWithinInterval(String.valueOf(priceRange - 1));
+
+        // 전체코인 리스트를 가져온다음
+        List<String> coinList = upbitRepository.findAllCoinCodes();
+
+        // 현재가격을 조회하고
+        List<Map<String, Object>> currentPriceList = upbitAPI.getCurrentPriceByTicker(coinList);
+
+        // 형태변환을 시켜준다.
+        List<Map<String, String>> convertCurrentPriceList = upbitUtils.convertPirceData(currentPriceList);
+
+        // 내부데이터와 실시간데이터를 합친다.
+        for (Map<String, String> row : convertCurrentPriceList) {
+            String dateStr = row.get("trade_date_kst");
+            String formattedDate = dateStr.substring(0, 4) + "-" + dateStr.substring(4, 6) + "-" + dateStr.substring(6, 8);
+            Object[] obj2 = {row.get("market"), formattedDate, row.get("trade_price")};
+
+            resultObj.add(obj2);
+        }
+
+        List<Map<String, String>> priceListData = new ArrayList<>();
+
+        //코인명으로 루프시작
+        for (String coin : coinList) {
+            List<BigDecimal> bigDecimalList = new ArrayList<>();
+            Map<String, String> priceMap = new HashMap<>();
+
+            for (Object[] obj : resultObj) {
+                if(coin.equals(obj[0])){
+                    String value = String.valueOf(obj[2]);
+                    BigDecimal replaceValue = new BigDecimal(value).setScale(8, RoundingMode.HALF_UP);
+                    bigDecimalList.add(replaceValue); // coin명으로 데이터검색 후 bigDecimalList에 담고
+                }
+            }
+
+            MathContext mc = new MathContext(30, RoundingMode.HALF_UP);
+            int maxScale = bigDecimalList.stream()
+                    .map(BigDecimal::stripTrailingZeros)
+                    .map(BigDecimal::scale)
+                    .max(Integer::compareTo)
+                    .orElse(8);
+
+            if(bigDecimalList.size() == priceRange){ // priceRange는 오늘날짜를 제외하기때문에 +1해서 검색기간값을 맞춘다.
+
+                BigDecimal totalPrice = bigDecimalList.stream()
+                        .reduce(BigDecimal.ZERO, (a, b) -> a.add(b, mc))
+                        .setScale(maxScale, RoundingMode.HALF_UP);
+
+                BigDecimal finalPrice = totalPrice.divide(BigDecimal.valueOf(priceRange), maxScale, RoundingMode.HALF_UP);
+
+                priceMap.put(coin, finalPrice.toPlainString());
             }
 
             if (!priceMap.isEmpty()) {

@@ -1,6 +1,5 @@
 package com.myapp.apiserver.controller;
 
-import com.myapp.apiserver.UpbitUtill.UpbitAPI;
 import com.myapp.apiserver.model.dto.FilterRequestDTO;
 import com.myapp.apiserver.model.dto.UpbitAllDataResponseDTO;
 import com.myapp.apiserver.model.dto.UpbitCoinDTO;
@@ -13,9 +12,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @Log4j2
@@ -34,19 +34,13 @@ public class UpbitController {
     @GetMapping("/api/upbit/priceList")
     @Description("업비트 코인리스트")
     public List<UpbitAllDataResponseDTO> getAllCoinAndPrice() {
-        log.info("/api/upbit/priceList");
         return upbitService.getAllCoinAndPrice();
     }
 
     @PostMapping("/api/upbit/filterData")
     @Description("업비트 필터 데이터 요청")
     public List<Map<String, String>> filterCoinData(@RequestBody FilterRequestDTO filterRequest) {
-
-        log.info("/api/upbit/filterData");
-        int priceRange = Integer.parseInt(filterRequest.getPriceRange());
-        String volume = filterRequest.getVolume();
-
-        return upbitService.findFilterCoinList(priceRange, volume);
+        return upbitService.findFilterCoinList(filterRequest.getConditionType(), filterRequest);
 
         // 필터링 로직 처리 (서비스 호출)
         //List<UpbitAllDataResponseDTO> filteredData = upbitService.filterCoinData(filterRequest);
@@ -55,9 +49,6 @@ public class UpbitController {
 
     }
 }
-
-
-
 
 
 //fetchPriceAndSync
