@@ -3,21 +3,44 @@ import '../css/components/FilterPopup.css';
 import '../index.css';
 import { postUpbitFilterData } from '../api/Api';
 
+// 옵션에 대한 매핑: 각 select option의 값에 따라 indicator와 operator를 분리합니다.
+const mapFilterOption = (option) => {
+    const mapping = {
+        aboveMovingAverage: { indicator: 'MA', operator: 'ABOVE' },
+        belowMovingAverage: { indicator: 'MA', operator: 'BELOW' },
+        aboveRSI: { indicator: 'RSI', operator: 'ABOVE' },
+        belowRSI: { indicator: 'RSI', operator: 'BELOW' },
+        changeRate: { indicator: 'CR', operator: 'ABOVE' } // 변동률은 조건이 하나인 경우; 필요시 별도 옵션 추가
+    };
+    return mapping[option] || { indicator: option, operator: 'ABOVE' };
+};
+
 const FilterPopup = () => {
     const [conditionType, setConditionType] = useState('AND');
-    const [filters, setFilters] = useState([{ id: 1, type: 'priceRange', value: 0 }]);
+    // 초기 필터: id는 내부 numeric id, option은 UI에서 선택하는 값, value는 조건 값
+    const [filters, setFilters] = useState([{ id: 1, option: 'aboveMovingAverage', value: 0 }]);
     const [results, setResults] = useState([]);
-    const [selectedMarkets, setSelectedMarkets] = useState(["KRW", "BTC", "USDT"]); // ✅ 기본적으로 전체 선택
+    const [selectedMarkets, setSelectedMarkets] = useState(["KRW"]);
 
-    // 필터 적용
+    // 필터 적용 시, 각 필터 객체의 option 값을 내부 매핑을 통해 indicator와 operator로 분리하여 변환
     const applyFilters = async () => {
         try {
+            const transformedFilters = filters.map(filter => {
+                const mapped = mapFilterOption(filter.option);
+                return {
+                    indicator: mapped.indicator,   // 예: "MA" 또는 "RSI"
+                    operator: mapped.operator,     // 예: "ABOVE" 또는 "BELOW"
+                    value: filter.value
+                };
+            });
+
             const requestData = {
                 conditionType: conditionType,
-                filters: filters,
-                markets: selectedMarkets // ✅ 선택된 마켓 정보 추가
+                filters: transformedFilters,
+                markets: selectedMarkets
             };
 
+            console.log(requestData);
             const response = await postUpbitFilterData(requestData);
             setResults(response);
         } catch (error) {
@@ -27,10 +50,10 @@ const FilterPopup = () => {
 
     // 필터 초기화
     const resetFilters = () => {
-        setFilters([{ id: 1, type: 'priceRange', value: 0 }]);
+        setFilters([{ id: 1, option: 'aboveMovingAverage', value: 0 }]);
         setConditionType('AND');
         setResults([]);
-        setSelectedMarkets(["KRW", "BTC", "USDT"]); // ✅ 기본값 리셋
+        setSelectedMarkets(["KRW"]);
     };
 
     const getNextId = () => {
@@ -40,30 +63,30 @@ const FilterPopup = () => {
     // 조건 추가
     const addFilter = () => {
         const newId = getNextId();
-        setFilters([...filters, { id: newId, type: 'priceRange', value: 0 }]);
+        setFilters([...filters, { id: newId, option: 'aboveMovingAverage', value: 0 }]);
     };
 
-    // 조건 삭제
+    // 조건 삭제 (ID 기준)
     const removeFilter = (id) => {
         setFilters(filters.filter(filter => filter.id !== id));
     };
 
-    // 필터 값 변경
+    // 필터 값 변경 (ID 기준)
     const handleFilterChange = (id, key, value) => {
         setFilters(filters.map(filter => filter.id === id ? { ...filter, [key]: value } : filter));
     };
 
-    // 체크박스 변경 핸들러 (AND / OR 선택)
+    // AND / OR 체크박스 핸들러
     const handleConditionChange = (type) => {
         setConditionType(type);
     };
 
-    // ✅ 마켓 필터 선택 핸들러
+    // 마켓 선택 핸들러
     const handleMarketChange = (market) => {
         setSelectedMarkets((prevMarkets) =>
             prevMarkets.includes(market)
-                ? prevMarkets.filter((m) => m !== market) // 체크 해제 시 제거
-                : [...prevMarkets, market] // 체크 시 추가
+                ? prevMarkets.filter((m) => m !== market)
+                : [...prevMarkets, market]
         );
     };
 
@@ -93,7 +116,7 @@ const FilterPopup = () => {
                     </label>
                 </div>
 
-                {/* ✅ 마켓 선택 체크박스 (KRW, BTC, USDT) */}
+                {/* 마켓 선택 체크박스 (KRW, BTC, USDT) */}
                 <div className="market-checkbox-group">
                     <label>
                         <input
@@ -125,10 +148,15 @@ const FilterPopup = () => {
                 <div className="filter-list">
                     {filters.map((filter) => (
                         <div key={filter.id} className="filter-group">
-                            <select value={filter.type} onChange={(e) => handleFilterChange(filter.id, 'type', e.target.value)}>
-                                <option value="priceRange">이동평균 조건</option>
-                                <option value="volume">거래량</option>
-                                <option value="changeRate">변동률</option>
+                            <select
+                                value={filter.option}
+                                onChange={(e) => handleFilterChange(filter.id, 'option', e.target.value)}
+                            >
+                                <option value="aboveMovingAverage">이동평균 조건이상</option>
+                                <option value="belowMovingAverage">이동평균 조건이하</option>
+                                <option value="aboveRSI">RSI 조건이상</option>
+                                <option value="belowRSI">RSI 조건이하</option>
+                                <option value="movingAverage">변동률</option>
                             </select>
 
                             <input
@@ -154,15 +182,16 @@ const FilterPopup = () => {
                 </div>
             </div>
 
-            {/* ✅ 오른쪽 결과 테이블 (스크롤 적용) */}
+            {/* 오른쪽 결과 테이블 (스크롤 적용) */}
             <div className="filter-popup-content">
                 <div className="filter-popup-result-container">
                     <table className="filter-popup-result-table">
                         <thead>
                         <tr>
                             <th>종목명</th>
-                            <th>현재가</th>
-                            <th>변동률</th>
+                            {/*<th>현재가</th>*/}
+                            {/*<th>평균값</th>*/}
+                            {/*<th>변동률</th>*/}
                         </tr>
                         </thead>
                         <tbody>
@@ -170,8 +199,9 @@ const FilterPopup = () => {
                             results.map((result, index) => (
                                 <tr key={index}>
                                     <td>{result.market}</td>
-                                    <td>{parseFloat(result.currentPrice).toFixed(8)}</td>
-                                    <td>{parseFloat(result.percentageChange).toFixed(2)}%</td>
+                                    {/*<td>{parseFloat(result.currentPrice)}</td>*/}
+                                    {/*<td>{parseFloat(result.movingAverage).toFixed(1)}</td>*/}
+                                    {/*<td>{parseFloat(result.percentageChange).toFixed(1)}</td>*/}
                                 </tr>
                             ))
                         ) : (
