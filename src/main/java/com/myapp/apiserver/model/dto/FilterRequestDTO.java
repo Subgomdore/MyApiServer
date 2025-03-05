@@ -14,11 +14,15 @@ public class FilterRequestDTO {
     @JsonProperty("filters")
     private List<FilterConditionDTO> filters;
 
+    @JsonProperty
+    private List<String> markets;
+
     @Override
     public String toString() {
         return "FilterRequestDTO{" +
                 "conditionType='" + conditionType + '\'' +
                 ", filters=" + filters +
+                ", markets=" + markets +
                 '}';
     }
 }

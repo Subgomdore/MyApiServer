@@ -7,11 +7,11 @@ import lombok.Setter;
 @Getter
 @Setter
 public class FilterConditionDTO {
-    @JsonProperty("id")
-    private Long id;
+    @JsonProperty("indicator")
+    private String indicator;
 
-    @JsonProperty("type")
-    private String type;
+    @JsonProperty("operator")
+    private String operator ;
 
     @JsonProperty("value")
     private Object value;
@@ -19,8 +19,8 @@ public class FilterConditionDTO {
     @Override
     public String toString() {
         return "FilterConditionDTO{" +
-                "id=" + id +
-                ", type='" + type + '\'' +
+                "id=" + indicator +
+                ", type='" + operator + '\'' +
                 ", value=" + value +
                 '}';
     }
