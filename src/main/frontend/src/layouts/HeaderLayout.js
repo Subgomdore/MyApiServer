@@ -15,22 +15,6 @@ function HeaderLayout() {
         return () => clearInterval(interval);
     }, []);
 
-    // 방문자 수를 서버에서 가져오는 함수
-    const fetchVisitorCount = async () => {
-        try {
-            const response = await fetch('/api/visitors/today/count');
-            if (!response.ok) throw new Error('방문자 수를 불러오지 못했습니다.');
-            const data = await response.json();
-            setVisitorCount(data);
-        } catch (error) {
-            console.error("🚨 방문자 수 가져오기 오류:", error);
-        }
-    };
-
-    // 페이지가 로드될 때 한 번만 실행
-    useEffect(() => {
-        fetchVisitorCount();
-    }, []);
 
     // 시간을 문자열로 변환하는 함수
     const formatTime = (date) => date.toLocaleTimeString();

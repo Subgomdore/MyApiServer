@@ -1,24 +1,24 @@
-/* ✅ 전체 레이아웃 */
+/* ✅ 전체 레이아웃: 상하 분할 */
 .filter-popup-container {
     display: flex;
+    flex-direction: column; /* 좌우 → 상하 */
     height: 100vh;
     background-color: #f8f8f8;
     overflow: hidden;
 }
 
-/* ✅ 좌측 필터 설정 */
+/* ✅ 상단 필터 설정 영역 */
 .filter-popup-sidebar {
-    width: 300px; /* 🌟 왼쪽 사이드바를 고정 크기로 설정 */
-    min-width: 335px; /* 최소 크기를 설정해 더 이상 줄어들지 않도록 */
+    width: 97%;
+    height: 40vh; /* 원하는 비율로 조정 가능 */
     background-color: #ffffff;
     padding: 20px;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-    height: 100vh;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     overflow-y: auto;
-    border-right: 2px solid #ddd;
+    border-bottom: 2px solid #ddd; /* 구분선 */
 }
 
-/* ✅ 필터 제목 스타일 */
+/* 필터 제목 스타일 */
 .filter-popup-sidebar h4 {
     margin-bottom: 10px;
     font-size: 18px;
@@ -26,7 +26,7 @@
     color: #333;
 }
 
-/* ✅ AND / OR 조건 체크박스 */
+/* AND / OR 체크박스 */
 .condition-checkbox {
     display: flex;
     gap: 15px;
@@ -43,6 +43,7 @@
     color: #444;
 }
 
+/* 마켓 체크박스 */
 .market-checkbox-group {
     display: flex;
     gap: 15px;
@@ -59,17 +60,54 @@
     color: #444;
 }
 
+/* 체크박스 스타일 */
 input[type="checkbox"] {
     width: 18px;
     height: 18px;
     accent-color: #ff9f43;
 }
 
-/* ✅ 필터 그룹 (각 필터 조건 박스) */
+/* ✅ TimeUnit 선택 영역 */
+.time-unit-selector {
+    margin: 8px 0;
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+}
+
+.time-unit-button {
+    padding: 4px 8px;
+    font-size: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+    background-color: #fff;
+    color: #333;
+    transition: background-color 0.3s ease-in-out;
+    outline: none;
+}
+
+.time-unit-button:hover {
+    background-color: #f0f0f0;
+}
+
+.time-unit-button.active {
+    background-color: #ff9800;
+    color: #fff;
+    border-color: #ff9800;
+}
+
+/* 필터 목록 (조건 리스트) */
+.filter-list {
+    margin-top: 10px;
+}
+
+/* 한 줄(행)에 해당하는 필터 그룹 */
 .filter-group {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    /* justify-content: space-between;  // 필요 시 사용 */
+    gap: 8px;  /* 요소 간 간격 */
     margin: 10px 0;
     background: #f9f9f9;
     padding: 10px;
@@ -82,15 +120,16 @@ input[type="checkbox"] {
     background: #f0f0f0;
 }
 
-/* ✅ SelectBox 스타일 */
+/* SelectBox / Input 스타일 */
 select {
     background: #ffffff;
     color: #333;
     border: 1px solid #ccc;
-    padding: 8px;
+    padding: 6px 8px;
     border-radius: 6px;
     cursor: pointer;
     transition: all 0.3s ease-in-out;
+    font-size: 13px;
 }
 
 select:hover {
@@ -102,16 +141,16 @@ select:focus {
     box-shadow: 0px 0px 6px rgba(255, 159, 67, 0.8);
 }
 
-/* ✅ Input 필드 스타일 */
 input[type="number"] {
     background: #ffffff;
     color: #333;
     border: 1px solid #ccc;
-    padding: 8px;
+    padding: 6px 8px;
     border-radius: 6px;
-    width: 80px;
+    width: 60px; /* 조금 좁게 */
     text-align: center;
     transition: all 0.3s ease-in-out;
+    font-size: 13px;
 }
 
 input[type="number"]:focus {
@@ -119,7 +158,7 @@ input[type="number"]:focus {
     box-shadow: 0px 0px 6px rgba(255, 159, 67, 0.8);
 }
 
-/* ✅ 추가 / 삭제 버튼 스타일 */
+/* 추가 / 삭제 버튼 스타일 */
 .add-button, .remove-button {
     background: #ff9f43;
     color: white;
@@ -128,6 +167,7 @@ input[type="number"]:focus {
     border-radius: 6px;
     cursor: pointer;
     transition: all 0.3s ease-in-out;
+    font-size: 13px;
 }
 
 .add-button:hover, .remove-button:hover {
@@ -136,20 +176,33 @@ input[type="number"]:focus {
 
 .remove-button {
     background: #ff5c5c;
-    margin-left: 10px;
 }
 
 .remove-button:hover {
     background: #ff3838;
 }
 
-/* ✅ 필터 적용 및 초기화 버튼 */
+/* 필터 적용 및 초기화 버튼 그룹 */
 .button-group {
     display: flex;
     justify-content: space-between;
     margin-top: 15px;
+    align-items: center;
 }
 
+.button-group-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.button-group-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* 적용 / 초기화 버튼 */
 .apply-button, .reset-button {
     background: #4caf50;
     color: white;
@@ -174,35 +227,34 @@ input[type="number"]:focus {
     background: #e53935;
 }
 
-/* ✅ 오른쪽 결과 테이블 컨테이너 (스크롤 적용) */
+/* ✅ 결과 영역 (하단) */
 .filter-popup-content {
-    flex-grow: 1; /* 🌟 남은 공간을 전부 차지하도록 설정 */
+    flex-grow: 1;
     display: flex;
     flex-direction: column;
-    height: 100vh;
     padding: 20px;
     background: #fff;
     overflow: hidden;
 }
 
-/* ✅ 테이블이 들어갈 컨테이너 */
+/* 결과 테이블 컨테이너 */
 .filter-popup-result-container {
     flex-grow: 1;
     overflow-y: auto;
-    max-height: calc(100vh - 80px);
     border: 1px solid #ddd;
     border-radius: 6px;
     padding: 10px;
     background: #ffffff;
 }
 
-/* ✅ 결과 테이블 스타일 */
+/* 결과 테이블 스타일 */
 .filter-popup-result-table {
     width: 100%;
     border-collapse: collapse;
 }
 
-.filter-popup-result-table th, .filter-popup-result-table td {
+.filter-popup-result-table th,
+.filter-popup-result-table td {
     padding: 12px;
     text-align: center;
     border-bottom: 1px solid #ddd;
@@ -218,4 +270,3 @@ tbody tr:hover {
     background: #f9f9f9;
     transition: all 0.2s ease-in-out;
 }
-

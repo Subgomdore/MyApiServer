@@ -9,7 +9,7 @@ import com.myapp.apiserver.model.dto.UpbitCoinDayPriceDTO;
 import com.myapp.apiserver.model.entity.UpbitCoin;
 import com.myapp.apiserver.model.entity.UpbitCoinDayPrice;
 import com.myapp.apiserver.repository.UpbitCoinDayPriceSpecification;
-import com.myapp.apiserver.repository.UpbitCoinPriceRepository;
+import com.myapp.apiserver.repository.UpbitCoinDayPriceRepository;
 import com.myapp.apiserver.repository.UpbitRepository;
 import jdk.jfr.Description;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +35,7 @@ public class UpbitServiceImpl implements UpbitService {
 
     private final UpbitRepository upbitRepository;
 
-    private final UpbitCoinPriceRepository upbitCoinPriceRepository;
+    private final UpbitCoinDayPriceRepository upbitCoinDayPriceRepository;
 
     private final UpbitUtils upbitUtils;
 
@@ -104,7 +104,7 @@ public class UpbitServiceImpl implements UpbitService {
                     })
                     .collect(Collectors.toList());
 
-            upbitCoinPriceRepository.saveAll(updateCoinPriceList);
+            upbitCoinDayPriceRepository.saveAll(updateCoinPriceList);
         }
 
         for (Map<String, String> rowMap : currentPriceResult) {
@@ -215,7 +215,7 @@ public class UpbitServiceImpl implements UpbitService {
             String startDate = String.valueOf(currentDay.minusDays(period));
             String endDate = String.valueOf(currentDay.minusDays(1));
 
-            List<UpbitCoinDayPrice> result = upbitCoinPriceRepository.findAll(
+            List<UpbitCoinDayPrice> result = upbitCoinDayPriceRepository.findAll(
                     Specification.where(UpbitCoinDayPriceSpecification.candleDateBetween(startDate, endDate))
                             .and(UpbitCoinDayPriceSpecification.marketStartsWithAny(marketList))
             );
@@ -262,7 +262,6 @@ public class UpbitServiceImpl implements UpbitService {
         }
 
         List<Map<String, String>> finalResult = aggregateFilterResultsByOperator(allIndicatorResults, conditionType);
-        log.info("최종 결과: {}", finalResult);
 
         return finalResult;
     }
@@ -372,11 +371,84 @@ public class UpbitServiceImpl implements UpbitService {
         return filteredResults;
     }
 
-    public List<Map<String, String>> applyRSIFilter(List<Map<String, String>> data, double threshold, String operator) {
+    public List<Map<String, String>> applyRSIFilter(List<Map<String, String>> resultMapList, int rsiThreshold, String operator) {
+        List<Map<String, String>> filteredResults = new ArrayList<>();
 
+        // RSI 계산에 사용할 기간 (일반적으로 14일)
+        int rsiPeriod = 14;
 
-        return null;
+        // 그룹핑: 마켓별로 데이터를 모음
+        Map<String, List<Map<String, String>>> marketGroups = new HashMap<>();
+        for (Map<String, String> record : resultMapList) {
+            String market = record.get("market");
+            marketGroups.computeIfAbsent(market, k -> new ArrayList<>()).add(record);
+        }
+
+        // 날짜 파싱을 위한 포맷터 (데이터의 candle_date_time_kst가 "yyyy-MM-dd" 형식이라고 가정)
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        // 각 마켓 그룹별로 처리
+        for (Map.Entry<String, List<Map<String, String>>> entry : marketGroups.entrySet()) {
+            List<Map<String, String>> records = entry.getValue();
+
+            // 날짜 오름차순으로 정렬 (오래된 날짜부터 최신 날짜 순)
+            records.sort(Comparator.comparing(r -> LocalDate.parse(r.get("candle_date_time_kst"), formatter)));
+
+            // RSI 계산을 위해 최소한 (rsiPeriod + 1)개의 데이터 필요
+            if (records.size() < rsiPeriod + 1) {
+                continue;
+            }
+
+            // RSI 계산: 최근 rsiPeriod개의 변화량을 기반으로 평균 상승과 평균 하락을 계산
+            BigDecimal gainSum = BigDecimal.ZERO;
+            BigDecimal lossSum = BigDecimal.ZERO;
+            for (int i = records.size() - rsiPeriod; i < records.size(); i++) {
+                BigDecimal previousPrice = new BigDecimal(records.get(i - 1).get("trade_price"));
+                BigDecimal currentPrice = new BigDecimal(records.get(i).get("trade_price"));
+                BigDecimal change = currentPrice.subtract(previousPrice);
+                if (change.compareTo(BigDecimal.ZERO) > 0) {
+                    gainSum = gainSum.add(change);
+                } else {
+                    lossSum = lossSum.add(change.abs());
+                }
+            }
+            BigDecimal avgGain = gainSum.divide(BigDecimal.valueOf(rsiPeriod), 8, RoundingMode.HALF_UP);
+            BigDecimal avgLoss = lossSum.divide(BigDecimal.valueOf(rsiPeriod), 8, RoundingMode.HALF_UP);
+            BigDecimal rsi;
+            if (avgLoss.compareTo(BigDecimal.ZERO) == 0) {
+                rsi = BigDecimal.valueOf(100);
+            } else {
+                BigDecimal rs = avgGain.divide(avgLoss, 8, RoundingMode.HALF_UP);
+                rsi = BigDecimal.valueOf(100).subtract(
+                        BigDecimal.valueOf(100).divide(BigDecimal.ONE.add(rs), 8, RoundingMode.HALF_UP)
+                );
+            }
+
+            // 최신 레코드의 가격 (가장 마지막 레코드)
+            Map<String, String> latestRecord = records.get(records.size() - 1);
+            BigDecimal currentPrice = new BigDecimal(latestRecord.get("trade_price"));
+
+            // operator에 따라 조건 검사: 현재 RSI가 임계치보다 높거나 낮은지 비교
+            boolean conditionSatisfied = false;
+            if ("ABOVE".equalsIgnoreCase(operator)) {
+                conditionSatisfied = rsi.compareTo(BigDecimal.valueOf(rsiThreshold)) > 0;
+            } else if ("BELOW".equalsIgnoreCase(operator)) {
+                conditionSatisfied = rsi.compareTo(BigDecimal.valueOf(rsiThreshold)) < 0;
+            }
+
+            if (conditionSatisfied) {
+                // 결과에 추가할 정보를 새로운 Map에 담음 (불필요한 소숫점 제거)
+                Map<String, String> resultMap = new HashMap<>();
+                resultMap.put("market", entry.getKey());
+                resultMap.put("currentPrice", currentPrice.stripTrailingZeros().toPlainString());
+                resultMap.put("RSI", rsi.stripTrailingZeros().toPlainString());
+                filteredResults.add(resultMap);
+            }
+        }
+
+        return filteredResults;
     }
+
 
 
 

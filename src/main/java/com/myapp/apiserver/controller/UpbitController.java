@@ -22,14 +22,14 @@ public class UpbitController {
 
     private final UpbitService upbitService;
 
-    @GetMapping("/api/upbit/list")
+    @GetMapping("/api/upbit/mklist")
     @Description("업비트 코인리스트")
     public List<UpbitCoinDTO> getAllCoinList() {
         return upbitService.getAllCoinList();
     }
 
     @GetMapping("/api/upbit/priceList")
-    @Description("업비트 코인리스트")
+    @Description("업비트 가격리스트")
     public List<UpbitAllDataResponseDTO> getAllCoinAndPrice() {
         return upbitService.getAllCoinAndPrice();
     }

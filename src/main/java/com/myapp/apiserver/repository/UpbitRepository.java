@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface UpbitRepository extends JpaRepository<UpbitCoin, Long> {
+public interface UpbitRepository extends JpaRepository<UpbitCoin, Long>, UpbitRepositoryCustom {
 
     // 모든 코인 코드만 조회하는 메서드
     @Query("SELECT market FROM UpbitCoin")
@@ -28,6 +28,4 @@ public interface UpbitRepository extends JpaRepository<UpbitCoin, Long> {
         ORDER BY udp.market ASC, udp.candle_date_time_kst DESC
         """, nativeQuery = true)
     List<Object[]> findDataWithinInterval(@Param("intervalValue") String intervalValue);
-
-
 }

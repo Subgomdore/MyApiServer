@@ -1,7 +1,17 @@
 import axios from 'axios';
 
+export const getMarketList = async () => {
+    try {
+        const res = await axios.get('/api/upbit/mklist');
+        return res.data;
+    } catch (error) {
+        console.error('Failed to fetch Upbit Market list:', error);
+        throw error;
+    }
+};
+
 // Upbit 리스트를 가져오는 API
-export const getUpbitList = async () => {
+export const getPriceList = async () => {
     try {
         const res = await axios.get('/api/upbit/priceList');
         return res.data;

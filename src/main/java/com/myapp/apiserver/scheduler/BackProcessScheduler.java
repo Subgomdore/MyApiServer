@@ -18,15 +18,18 @@ public class BackProcessScheduler {
     private final UpbitService upbitService;
     private final UpbitAutoTradingBot upbitAutoTradingBot;
 
-    @Scheduled(cron = "15 32 20 * * ?")
+    @Scheduled(cron = "00 00 00 * * ?")
     @Description("업비트 코인리스트 동기화 / 업비트 코인리스트 가격 동기화 :: 이전날짜의 정보들을 이관")
     public void performTaskAtNineAm() {
 
         externalUpbitService.doGetUpbitCoinList();
         log.warn("BackProcessScheduler >> UPBIT COIN LIST SYNC COMPLETE");
 
-        externalUpbitService.doGetUpbitCoinPrice("200");
-        log.warn("BackProcessScheduler >> UPBIT COIN_PRICE SYNC COMPLETE");
+        externalUpbitService.doGetUpbitCoinDayPrice("200");
+        log.warn("BackProcessScheduler >> UPBIT COIN_DAY_PRICE SYNC COMPLETE");
+
+        externalUpbitService.doGetUpbitCoinMinutePrice("200");
+        log.warn("BackProcessScheduler >> UPBIT COIN_MINUTE_PRICE SYNC COMPLETE");
     }
 
     @Scheduled(cron = "0 10 9 * * ?")
